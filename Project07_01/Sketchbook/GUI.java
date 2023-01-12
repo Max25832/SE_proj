@@ -23,9 +23,14 @@ public class GUI extends JFrame implements ActionListener{
 	JLabel imageLabel;
     private DrawingPanel drawingPanel;
     public String clickedButton = "";
+    
+    // Instantiate the database
+    Database db = new Database();
 
 
-	public GUI(){
+	public GUI(){	
+		
+		db.createTable();
 		
 		setTitle("Sketchbook DEMO!");
 		menuBar = new JMenuBar();
@@ -378,7 +383,7 @@ public class GUI extends JFrame implements ActionListener{
 	    int selectX1, selectX2, selectY1, selectY2;
 	    int recX1, recX2, recY1, recY2;
 	    int lineX1, lineX2, lineY1, lineY2;
-
+	    
 	    public DrawingPanel() {
 	        points = new ArrayList<>();
 	        addMouseListener(this);
@@ -388,11 +393,15 @@ public class GUI extends JFrame implements ActionListener{
 	    public void paintComponent(Graphics g) {
 	        super.paintComponent(g);
 
+	        	// This for block draws the points every time they get changed
 	        	for (int i = 0; i < points.size(); i++) {
 					//draw a point
 					Point p = points.get(i);
 					g.fillOval(p.x, p.y, 5, 5);
+					//System.out.println(p);
 				}
+	        	
+	        	// TODO: Make it so that the rectangle is transparent no matter what direction it is drawn
 	        	if(clickedButton.equals("select")) {
 	        		int widthSelect = selectX2 - selectX1;
 	        		int heightSelect = selectY2 - selectY1;
@@ -447,6 +456,7 @@ public class GUI extends JFrame implements ActionListener{
 	    public void mousePressed(MouseEvent e) {
 	    	if(clickedButton.equals("point")) {
 	    		points.add(e.getPoint());
+	    		db.insertShapes(e.getPoint().toString(), "'Point'");
 		        drawing = true;
 	    	}
 	    	if(clickedButton.equals("select")) {
