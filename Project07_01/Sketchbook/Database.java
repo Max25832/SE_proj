@@ -44,11 +44,14 @@ public class Database {
 		 * 
 		 * OUTPUTS: connection: Connection class - A connection to a local MySQL database.
 		 */
+		String driver = "com.mysql.cj.jdbc.Driver";
+		String username = "root";
+		String password = "admin";
+		
+		
 		try {
-			String driver = "com.mysql.cj.jdbc.Driver";
-			String url = "jdbc:mysql://localhost:3306/shapes_db";
-			String username = "root";
-			String password = "admin";
+			
+			String url = "jdbc:mysql://localhost:3306/shapes_db";					
 			String createQuery = "CREATE DATABASE IF NOT EXISTS shapes_db";
 			Class.forName(driver);
 			
@@ -59,7 +62,20 @@ public class Database {
 			stmt.executeUpdate(createQuery);
 			System.out.println("Connected to database!");
 			return connection;
+			// First time setup causes this error
+		} catch (java.sql.SQLSyntaxErrorException e) {
+			String url = "jdbc:mysql://localhost:3306";					
+			String createQuery = "CREATE DATABASE IF NOT EXISTS shapes_db";
+			Class.forName(driver);
 			
+			// Attempt to connect to database at url
+			Connection connection = DriverManager.getConnection(url, username, password);
+			// Create the SQL statement from string
+			Statement stmt = connection.createStatement();
+			stmt.executeUpdate(createQuery);
+			stmt.executeUpdate("USE shapes_db");
+			System.out.println("Connected to database!");
+			return connection;
 		} catch (Exception e) {
 			System.out.println(e);
 		}
