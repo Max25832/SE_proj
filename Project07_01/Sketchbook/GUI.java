@@ -379,13 +379,19 @@ public class GUI extends JFrame implements ActionListener{
 	public class DrawingPanel extends JPanel implements MouseListener, MouseMotionListener {
 
 	    private ArrayList<Point> points;
+	    private ArrayList<Line> lineList; //i want to make this for lines
+		//i think we should either store lines as Line2d class (then should change drawing method) or make our own line class
+//private ArrayList<Rect> rectangles; //this for rectangles
 	    private boolean drawing;
 	    int selectX1, selectX2, selectY1, selectY2;
 	    int recX1, recX2, recY1, recY2;
 	    int lineX1, lineX2, lineY1, lineY2;
+	    int x1, x2, y1, y2;
+	    double slope;
 	    
 	    public DrawingPanel() {
 	        points = new ArrayList<>();
+	        lineList = new ArrayList<>();
 	        addMouseListener(this);
 	        addMouseMotionListener(this);
 	    }
@@ -420,9 +426,30 @@ public class GUI extends JFrame implements ActionListener{
 	        	// Draw all lines 
 	        	if (clickedButton.equals("line")) {
 	        		 g.setColor(Color.BLACK);
-	        	     g.drawLine(lineX1,lineY1,lineX2,lineY2);
+//	        	     g.drawLine(lineX1,lineY1,lineX2,lineY2);
+	        		 Line lin = new Line(lineX1, lineX2, lineY1, lineY2); //takes user input and adds it to "lin" of class Line
+	        		 lineList.add(lin); //append new lin to ArrayList "lineList"
+	        		 
+	        		 
+	        		 //for loop that iterates through and draws every line in lineList
+	        		 for (int i=0; i < lineList.size(); i++)
+	                 {
+	        			 Line lin2 = lineList.get(i);
+	        			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+	        			 x2 = lin2.x2();
+	        			 y1 = lin2.y1();
+	        			 y2 = lin2.y2();
+	        			 g.drawLine(x1, x2, y1, y2); //draw the line
+	                 }
 
-	        	     
+
+	        		 
+	        		 //test
+	        		 slope = lin.getSlope();
+	        		 System.out.println(slope); //it works! so i'm storing it properly inn lin
+//	        	     lines.add(null)
+	        
+	        		 //not sure what this is, it was already here
 	        	     for(Point p : points) {  
 	        	     }
 	        	}
