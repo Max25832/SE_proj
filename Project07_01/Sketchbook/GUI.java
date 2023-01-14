@@ -324,18 +324,13 @@ public class GUI extends JFrame implements ActionListener{
 		if(e.getSource() == saveMenuItem ) {
 			JFileChooser fc = new JFileChooser();
 			fc.setAcceptAllFileFilterUsed(false);
-			FileNameExtensionFilter extFilter = new FileNameExtensionFilter("text file", "txt", "fin");
+			FileNameExtensionFilter extFilter = new FileNameExtensionFilter("CSV files", "csv");
 			fc.addChoosableFileFilter(extFilter);
 			int i = fc.showSaveDialog(this);
 			if (i == JFileChooser.APPROVE_OPTION) {
 				File f = fc.getSelectedFile();
-				try {
-					BufferedWriter writer = new BufferedWriter(new FileWriter(f));
-					writer.write(ta.getText());
-					writer.close();
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
+				System.out.println("Saving at " + f.getAbsolutePath());
+				CSVOperations.exportCSV(f, db.getAllFromDB());
 			}
 		}
 		
@@ -429,13 +424,15 @@ public class GUI extends JFrame implements ActionListener{
 //	        	     g.drawLine(lineX1,lineY1,lineX2,lineY2);
 	        		 Line lin = new Line(lineX1, lineX2, lineY1, lineY2); //takes user input and adds it to "lin" of class Line
 	        		 lineList.add(lin); //append new lin to ArrayList "lineList"
+	        		 // Send new line to the Database
+	        		 db.insertShapes(lin.geometry(), "'Line'");
 	        		 
 	        		 
 	        		 //for loop that iterates through and draws every line in lineList
 	        		 for (int i=0; i < lineList.size(); i++)
 	                 {
 	        			 Line lin2 = lineList.get(i);
-	        			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+	        			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordinates to use in drawLine below
 	        			 x2 = lin2.x2();
 	        			 y1 = lin2.y1();
 	        			 y2 = lin2.y2();

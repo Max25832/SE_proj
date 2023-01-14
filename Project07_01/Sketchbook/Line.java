@@ -15,7 +15,7 @@ public class Line {
         this.y2 = y2;
     }
     
-    //methods to return back each element of the coordanite. There's probably a better way to do this
+    //methods to return back each element of the coordinate. There's probably a better way to do this
     public int x1() {
     	return x1;
     }
@@ -47,6 +47,11 @@ public class Line {
         double xDiff = x2 - x1;
         double yDiff = y2 - y1;
         return yDiff / xDiff;
+    }
+    
+    public String geometry() {
+    	String geometry = x1 + ", " + x2 + ", " + y1 + ", " + y2;
+    	return geometry;
     }
 
 }
