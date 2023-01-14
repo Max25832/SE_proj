@@ -15,7 +15,8 @@ public class Line {
         this.y2 = y2;
     }
     
-    //methods to return back each element of the coordanite. There's probably a better way to do this
+    //methods to return back each element of the coordanite. There's probably a better way to do this. Okay now in retrospect
+    //i might not even need a method... i could probably call .x1 and be rid of all these methods - not sure about this tho.
     public int x1() {
     	return x1;
     }

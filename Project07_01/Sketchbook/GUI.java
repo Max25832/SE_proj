@@ -380,11 +380,16 @@ public class GUI extends JFrame implements ActionListener{
 
 	    private ArrayList<Point> points;
 	    private ArrayList<Line> lineList; //i want to make this for lines
-		//i think we should either store lines as Line2d class (then should change drawing method) or make our own line class
-//private ArrayList<Rect> rectangles; //this for rectangles
+	    private ArrayList<Rect> rectList; //note there is an existing java calss Rectangle, but I'm making my own because of the parameters i want
 	    private boolean drawing;
+	    
+	    //initializaing variables for use in drawing stuff
 	    int selectX1, selectX2, selectY1, selectY2;
+	    //rectangles stuff
 	    int recX1, recX2, recY1, recY2;
+	    int widthRec, heightRec;
+	    int rx1, ry1, rw, rh;
+	    //line stuff
 	    int lineX1, lineX2, lineY1, lineY2;
 	    int x1, x2, y1, y2;
 	    double slope;
@@ -392,6 +397,7 @@ public class GUI extends JFrame implements ActionListener{
 	    public DrawingPanel() {
 	        points = new ArrayList<>();
 	        lineList = new ArrayList<>();
+	        rectList = new ArrayList<>();
 	        addMouseListener(this);
 	        addMouseMotionListener(this);
 	    }
@@ -434,7 +440,7 @@ public class GUI extends JFrame implements ActionListener{
 	        		 //for loop that iterates through and draws every line in lineList
 	        		 for (int i=0; i < lineList.size(); i++)
 	                 {
-	        			 Line lin2 = lineList.get(i);
+	        			 Line lin2 = lineList.get(i); //loads next item from list into lin2 so that we can draw this out
 	        			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
 	        			 x2 = lin2.x2();
 	        			 y1 = lin2.y1();
@@ -444,10 +450,7 @@ public class GUI extends JFrame implements ActionListener{
 
 
 	        		 
-	        		 //test
-	        		 slope = lin.getSlope();
-	        		 System.out.println(slope); //it works! so i'm storing it properly inn lin
-//	        	     lines.add(null)
+
 	        
 	        		 //not sure what this is, it was already here
 	        	     for(Point p : points) {  
@@ -456,12 +459,33 @@ public class GUI extends JFrame implements ActionListener{
             
 	        	// Draw rectangle 
 	        	if(clickedButton.equals("rectangle")) {
-	        		int widthRec= recX2 - recX1;
-	        		int heightRec= recY2 - recY1;
 	        		g.setColor(Color.BLACK);
-	        		g.setColor(Color.BLACK);
-	        		g.drawRect(recX1, recY1, widthRec, heightRec);
+	        		Rect rec = new Rect(recX1, recY1 , recX2, recY2); 
+	        		System.out.println("RecX1 = " + recX1 + "RecX2 = " + recX2 + "RecY1 = " + recY1 + "RecY2 = " + recY2);
+	        		rectList.add(rec);//append new rec to list
+
+	        		g.setColor(Color.BLACK); //not sure if there was a purpose to this being here twice... this was not me
+//	        		g.drawRect(recX1, recY1, widthRec, heightRec);
 	        		
+	        		for (int i=0; i < rectList.size(); i++)
+	                {
+	        			 Rect rec2 = rectList.get(i); //loads next item from list into rec2 so that we can draw this out
+	        			 rx1 = rec2.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
+	        			 ry1 = rec2.recY1();
+	        			 rw = rec2.widthRec();
+	        			 rh = rec2.heightRec();
+//	        			 
+//	        			 System.out.println(rx1);
+//	        			 System.out.println(ry1);
+//	        			 System.out.println(rw);
+//	        			 System.out.println(rh);
+
+	        			 
+	 	        		 g.drawRect(rx1, ry1, rw, rh);
+	                }
+	        		
+	        		
+	        		//not sure what this is
 	        		for(Point p : points) {
 	        			if(p.x > recX1 && p.x < recX2 && p.y > recY1 && p.y < recY2) {
 	        				
