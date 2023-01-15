@@ -424,7 +424,7 @@ public class GUI extends JFrame implements ActionListener{
 	        		}
 	        	}
 
-	        	// Draw all lines 
+	        	// Write all user drawn lines to an Array List to be drawn later in code
 	        	if (clickedButton.equals("line")) {
 	        		 g.setColor(Color.BLACK);
 //	        	     g.drawLine(lineX1,lineY1,lineX2,lineY2);
@@ -433,28 +433,13 @@ public class GUI extends JFrame implements ActionListener{
 	        		 // Send new line to the Database
 	        		 db.insertShapes(lin.geometry(), "'Line'");
 	        		 
-	        		 
-	        		 //for loop that iterates through and draws every line in lineList
-	        		 for (int i=0; i < lineList.size(); i++)
-	                 {
-	        			 Line lin2 = lineList.get(i); //loads next item from list into lin2 so that we can draw this out
-	        			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
-	        			 x2 = lin2.x2();
-	        			 y1 = lin2.y1();
-	        			 y2 = lin2.y2();
-	        			 g.drawLine(x1, x2, y1, y2); //draw the line
-	                 }
-
-
-	        		 
-
 	        
 	        		 //not sure what this is, it was already here
 	        	     for(Point p : points) {  
 	        	     }
 	        	}
             
-	        	// Draw rectangle 
+	        	// Write all user drawn rectangles to an Array List to be drawn later in code
 	        	if(clickedButton.equals("rectangle")) {
 	        		g.setColor(Color.BLACK);
 	        		Rect rec = new Rect(recX1, recY1 , recX2, recY2); 
@@ -463,23 +448,6 @@ public class GUI extends JFrame implements ActionListener{
 
 	        		g.setColor(Color.BLACK); //not sure if there was a purpose to this being here twice... this was not me
 //	        		g.drawRect(recX1, recY1, widthRec, heightRec);
-	        		
-	        		for (int i=0; i < rectList.size(); i++)
-	                {
-	        			 Rect rec2 = rectList.get(i); //loads next item from list into rec2 so that we can draw this out
-	        			 rx1 = rec2.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
-	        			 ry1 = rec2.recY1();
-	        			 rw = rec2.widthRec();
-	        			 rh = rec2.heightRec();
-//	        			 
-//	        			 System.out.println(rx1);
-//	        			 System.out.println(ry1);
-//	        			 System.out.println(rw);
-//	        			 System.out.println(rh);
-
-	        			 
-	 	        		 g.drawRect(rx1, ry1, rw, rh);
-	                }
 	        		
 	        		
 	        		//not sure what this is
@@ -491,7 +459,30 @@ public class GUI extends JFrame implements ActionListener{
 	        	}
 	    
 			
-			 
+	        	//the following two for loops need to be outside of the clickedButton areas so that they remain drawn
+	        	//iterate through list of lines and draw all the user drawn lines
+	        	for (int i=0; i < lineList.size(); i++)
+                {
+       			 Line lin2 = lineList.get(i); //loads next item from list into lin2 so that we can draw this out
+       			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+       			 x2 = lin2.x2();
+       			 y1 = lin2.y1();
+       			 y2 = lin2.y2();
+       			 g.drawLine(x1, x2, y1, y2); //draw the line
+                }
+	        	
+	        	//iterate through list of rectanles and draw all the user drawn rectangles
+	        	for (int i=0; i < rectList.size(); i++)
+                {
+        			 Rect rec2 = rectList.get(i); //loads next item from list into rec2 so that we can draw this out
+        			 rx1 = rec2.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
+        			 ry1 = rec2.recY1();
+        			 rw = rec2.widthRec();
+        			 rh = rec2.heightRec();
+
+        			 
+ 	        		 g.drawRect(rx1, ry1, rw, rh);
+                }
 
 	        // Draw the current line being drawn (if any)
 			/*
