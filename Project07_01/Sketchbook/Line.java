@@ -17,6 +17,7 @@ public class Line {
     
     //methods to return back each element of the coordanite. There's probably a better way to do this. Okay now in retrospect
     //i might not even need a method... i could probably call .x1 and be rid of all these methods - not sure about this tho.
+    //methods to return back each element of the coordinate. There's probably a better way to do this
     public int x1() {
     	return x1;
     }
@@ -48,6 +49,11 @@ public class Line {
         double xDiff = x2 - x1;
         double yDiff = y2 - y1;
         return yDiff / xDiff;
+    }
+    
+    public String geometry() {
+    	String geometry = x1 + ", " + x2 + ", " + y1 + ", " + y2;
+    	return geometry;
     }
 
 }

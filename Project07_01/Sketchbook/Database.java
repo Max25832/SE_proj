@@ -168,37 +168,46 @@ public class Database {
 		}
 	}
 	
-	public void getAllLinesFromDB() {
-		/* The getAllLinesFromDB() method selects all line shapes from the database
+	public String[] getAllFromDB() {
+		/* The getAllLinesFromDB() method gets all data from the database
 		 * 
 		 * INPUTS: None
 		 * 
-		 * OUTPUTS: None
+		 * OUTPUTS: dataList - A string Array with shape data
 		 */
-		
-		/*
 		Statement stmt = null;
-		lineId = 0;
+		List<String> dataList = new LinkedList<String>();
 		
 		try {
 			Connection connection = getConnection();
 			stmt = connection.createStatement();
 			
-			String query = "SELECT * FROM polygons WHERE type = 'Line'";
+			String query = "SELECT * FROM polygons";
 			ResultSet results = stmt.executeQuery(query);
 			
 			while (results.next()) {
-				selectedLine.removeAll(selectedLine);
-				
+
+			        
+		        int id = results.getInt("id");
+		        String geometry = results.getString("geometry");
+		        String type = results.getString("type");
+		        
+		        dataList.add(type + ";" + geometry);
+		        System.out.format("%s, %s, %s\n", id, geometry, type);
+			        
+			    
+			    System.out.println("");
 			}
+				
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
-			System.out.println("getAllLinesFromDB() completed");
+			System.out.println("getAllFromDB() completed");
 		}
-
-		*/
-				
+		return dataList.toArray(new String[0]);
 	}
 	
+	public void exportCSV() {
+		getAllFromDB();
+	}
 }
