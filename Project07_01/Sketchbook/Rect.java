@@ -25,4 +25,8 @@ public class Rect {
 		heightRec = recY2 - recY1;
 		return heightRec;
 	}
+	public String geometry() {
+		String geometry = recX1 + ", " + recX2 + ", " + recY1 + ", " + recY2;
+		return geometry;
+	}
 }
