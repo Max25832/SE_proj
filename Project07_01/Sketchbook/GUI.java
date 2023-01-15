@@ -461,19 +461,17 @@ public class GUI extends JFrame implements ActionListener{
 			
 	        	//the following two for loops need to be outside of the clickedButton areas so that they remain drawn
 	        	//iterate through list of lines and draw all the user drawn lines
-	        	for (int i=0; i < lineList.size(); i++)
-                {
-       			 Line lin2 = lineList.get(i); //loads next item from list into lin2 so that we can draw this out
-       			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
-       			 x2 = lin2.x2();
-       			 y1 = lin2.y1();
-       			 y2 = lin2.y2();
-       			 g.drawLine(x1, x2, y1, y2); //draw the line
+	        	for (int i=0; i < lineList.size(); i++){
+	       			 Line lin2 = lineList.get(i); //loads next item from list into lin2 so that we can draw this out
+	       			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+	       			 x2 = lin2.x2();
+	       			 y1 = lin2.y1();
+	       			 y2 = lin2.y2();
+	       			 g.drawLine(x1, x2, y1, y2); //draw the line
                 }
 	        	
 	        	//iterate through list of rectanles and draw all the user drawn rectangles
-	        	for (int i=0; i < rectList.size(); i++)
-                {
+	        	for (int i=0; i < rectList.size(); i++) {
         			 Rect rec2 = rectList.get(i); //loads next item from list into rec2 so that we can draw this out
         			 rx1 = rec2.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
         			 ry1 = rec2.recY1();
