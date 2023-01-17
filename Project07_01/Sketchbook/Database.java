@@ -51,7 +51,7 @@ public class Database {
 		
 		try {
 			
-			String url = "jdbc:mysql://localhost:3306/shapes_db";					
+			String url = "jdbc:mysql://localhost:3306/shapes_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Berlin";					
 			String createQuery = "CREATE DATABASE IF NOT EXISTS shapes_db";
 			Class.forName(driver);
 			
