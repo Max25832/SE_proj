@@ -6,7 +6,7 @@ import java.awt.Graphics;
 //A class containing Lines
 
 public class Line {
-	private int x1, y1, x2, y2;
+	private int x1, y1, x2, y2; //this could maybe be made not private
 
     public Line(int x1, int y1, int x2, int y2) {
         this.x1 = x1;
@@ -17,7 +17,8 @@ public class Line {
     
     //methods to return back each element of the coordanite. There's probably a better way to do this. Okay now in retrospect
     //i might not even need a method... i could probably call .x1 and be rid of all these methods - not sure about this tho.
-    //methods to return back each element of the coordinate. There's probably a better way to do this
+    //methods to return back each element of the coordinate. There's probably a better way to do this - UPDATE, i think maybe
+    //by making variables not private
     public int x1() {
     	return x1;
     }

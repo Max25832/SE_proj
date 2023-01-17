@@ -373,13 +373,16 @@ public class GUI extends JFrame implements ActionListener{
 	
 	public class DrawingPanel extends JPanel implements MouseListener, MouseMotionListener {
 
-	    private ArrayList<Point> points;
+	    private ArrayList<Dot> pointsList;
 	    private ArrayList<Line> lineList; //i want to make this for lines
 	    private ArrayList<Rect> rectList; //note there is an existing java calss Rectangle, but I'm making my own because of the parameters i want
 	    private boolean drawing;
 	    
 	    //initializaing variables for use in drawing stuff
 	    int selectX1, selectX2, selectY1, selectY2;
+	    //points stuff
+	    int px, py;
+	    int xp, yp;
 	    //rectangles stuff
 	    int recX1, recX2, recY1, recY2;
 	    int widthRec, heightRec;
@@ -390,7 +393,7 @@ public class GUI extends JFrame implements ActionListener{
 	    double slope;
 	    
 	    public DrawingPanel() {
-	        points = new ArrayList<>();
+	        pointsList = new ArrayList<>();
 	        lineList = new ArrayList<>();
 	        rectList = new ArrayList<>();
 	        addMouseListener(this);
@@ -400,13 +403,20 @@ public class GUI extends JFrame implements ActionListener{
 	    public void paintComponent(Graphics g) {
 	        super.paintComponent(g);
 
-	        	// This for block draws the points every time they get changed
-	        	for (int i = 0; i < points.size(); i++) {
-					//draw a point
-					Point p = points.get(i);
-					g.fillOval(p.x, p.y, 5, 5);
-					//System.out.println(p);
-				}
+//	        	// This for block draws the points every time they get changed
+//	        	for (int i = 0; i < pointsList.size(); i++) {
+//					//draw a point
+//					Point p = pointsList.get(i);
+//					g.fillOval(p.x, p.y, 5, 5);
+//					//System.out.println(p);
+//				}
+	        	
+	        	if(clickedButton.equals("point")) {
+	        		Dot d = new Dot(px, py);
+	        		pointsList.add(d);
+	        		
+	        		
+	        	}
 	        	
 	        	// TODO: Make it so that the rectangle is transparent no matter what direction it is drawn
 	        	if(clickedButton.equals("select")) {
@@ -417,26 +427,18 @@ public class GUI extends JFrame implements ActionListener{
 	        		g.setColor(new Color(77, 158, 220));
 	        		g.drawRect(selectX1, selectY1, widthSelect, heightSelect);
 	        		
-	        		for(Point p : points) {
-	        			if(p.x > selectX1 && p.x < selectX2 && p.y > selectY1 && p.y < selectY2) {
-	        				
-	        			}
-	        		}
+	        		
 	        	}
 
 	        	// Write all user drawn lines to an Array List to be drawn later in code
 	        	if (clickedButton.equals("line")) {
-	        		 g.setColor(Color.BLACK);
-//	        	     g.drawLine(lineX1,lineY1,lineX2,lineY2);
+//	        		 g.setColor(Color.BLACK);
 	        		 Line lin = new Line(lineX1, lineX2, lineY1, lineY2); //takes user input and adds it to "lin" of class Line
 	        		 lineList.add(lin); //append new lin to ArrayList "lineList"
 	        		 // Send new line to the Database
 	        		 db.insertShapes(lin.geometry(), "'Line'");
 	        		 
 	        
-	        		 //not sure what this is, it was already here
-	        	     for(Point p : points) {  
-	        	     }
 	        	}
             
 	        	// Write all user drawn rectangles to an Array List to be drawn later in code
@@ -450,15 +452,11 @@ public class GUI extends JFrame implements ActionListener{
 //	        		g.drawRect(recX1, recY1, widthRec, heightRec);
 	        		
 	        		
-	        		//not sure what this is
-	        		for(Point p : points) {
-	        			if(p.x > recX1 && p.x < recX2 && p.y > recY1 && p.y < recY2) {
-	        				
-	        			}
-	        		}
+	        		
 	        	}
 	    
 			
+	        	g.setColor(Color.BLACK);
 	        	//the following two for loops need to be outside of the clickedButton areas so that they remain drawn
 	        	//iterate through list of lines and draw all the user drawn lines
 	        	for (int i=0; i < lineList.size(); i++){
@@ -467,6 +465,7 @@ public class GUI extends JFrame implements ActionListener{
 	       			 x2 = lin2.x2();
 	       			 y1 = lin2.y1();
 	       			 y2 = lin2.y2();
+	       			 
 	       			 g.drawLine(x1, x2, y1, y2); //draw the line
                 }
 	        	
@@ -481,6 +480,15 @@ public class GUI extends JFrame implements ActionListener{
         			 
  	        		 g.drawRect(rx1, ry1, rw, rh);
                 }
+	        	
+	        	for (int i=0; i < pointsList.size(); i++) {
+	        		Dot d2 = pointsList.get(i);
+	        		xp = d2.px();
+	        		yp = d2.py();
+	        		
+	        		g.fillOval(xp, yp, 5, 5);
+	        		
+	        	}
 
 	        // Draw the current line being drawn (if any)
 			/*
@@ -492,9 +500,12 @@ public class GUI extends JFrame implements ActionListener{
 	    // MouseListener methods
 	    public void mousePressed(MouseEvent e) {
 	    	if(clickedButton.equals("point")) {
-	    		points.add(e.getPoint());
-	    		db.insertShapes(e.getPoint().toString(), "'Point'");
+//	    		points.add(e.getPoint());
+//	    		db.insertShapes(e.getPoint().toString(), "'Point'");
 		        drawing = true;
+		        
+		        px = e.getX();
+	    		py = e.getY();
 	    	}
 	    	if(clickedButton.equals("select")) {
 	    		selectX1 = e.getX();
