@@ -14,5 +14,9 @@ public class Dot {
 	public int py() {
 		return py;
 	}
-
+	// Outputs the point values as a string.
+    public String geometry() {
+    	String geometry = px + ", " + py;
+    	return geometry;
+    }
 }

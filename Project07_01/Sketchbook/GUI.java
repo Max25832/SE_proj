@@ -414,6 +414,7 @@ public class GUI extends JFrame implements ActionListener{
 	        	if(clickedButton.equals("point")) {
 	        		Dot d = new Dot(px, py);
 	        		pointsList.add(d);
+	        		db.insertShapes(d.geometry(), "'Point'");
 	        		
 	        		
 	        	}
