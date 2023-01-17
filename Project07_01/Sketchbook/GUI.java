@@ -465,6 +465,7 @@ public class GUI extends JFrame implements ActionListener{
 	        	//the following two for loops need to be outside of the clickedButton areas so that they remain drawn
 	        	//iterate through list of lines and draw all the user drawn lines
 	        	for (int i=0; i < lineList.size(); i++){
+	        		g.setColor(Color.black);
 	       			 Line lin2 = lineList.get(i); //loads next item from list into lin2 so that we can draw this out
 	       			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
 	       			 x2 = lin2.x2();
