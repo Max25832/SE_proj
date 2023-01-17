@@ -450,7 +450,8 @@ public class GUI extends JFrame implements ActionListener{
 
 	        		g.setColor(Color.BLACK); //not sure if there was a purpose to this being here twice... this was not me
 //	        		g.drawRect(recX1, recY1, widthRec, heightRec);
-	        		
+	        		// Send new rectangle to the Database
+	        		db.insertShapes(rec.geometry(), "'Rectangle'");
 	        		
 	        		
 	        	}
