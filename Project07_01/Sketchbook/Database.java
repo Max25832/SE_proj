@@ -51,7 +51,7 @@ public class Database {
 		
 		try {
 			
-			String url = "jdbc:mysql://localhost:3306/shapes_db";					
+			String url = "jdbc:mysql://localhost:3306/shapes_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Europe/Berlin";					
 			String createQuery = "CREATE DATABASE IF NOT EXISTS shapes_db";
 			Class.forName(driver);
 			
@@ -205,6 +205,95 @@ public class Database {
 			System.out.println("getAllFromDB() completed");
 		}
 		return dataList.toArray(new String[0]);
+	}
+	
+	public Integer[] selectFeatures(int inputX1, int inputY1, int inputX2, int inputY2) {
+		/* The selectFeatures() method returns the features of the database which are inside the Selection Rectangle
+		 * 
+		 * INPUTS: the Coordinates of the Select-Rectangle
+		 * 
+		 * OUTPUTS: List of the IDs to manipulate them afterwards
+		 * 
+		 * @author Ida Hausmann
+		 */
+		Statement stmt = null;
+		boolean isInSelection = true;
+		List<Integer> idList = new LinkedList<Integer>();
+		
+		try {
+			Connection connection = getConnection();
+			stmt = connection.createStatement();
+			
+			//request to the database to get all features and saving them
+			String query = "SELECT * FROM polygons";
+			ResultSet results = stmt.executeQuery(query);
+			
+			//while loop to iterate through all features
+			while (results.next()) {
+				
+				//saving the different columns of the database in variables
+		        int id = results.getInt("id");
+		        String geometry = results.getString("geometry");
+		        String type = results.getString("type");
+		        
+		        //checking if the current feature is of the type point or line/rectangle
+		        if(type == "Point") {
+		        	
+		        	//splitting the geometry String to get a list of the different values
+		        	String[] split = geometry.split(", ");
+		        	
+		        	//converting the string values to integer to make them comparable to the input parameters
+		        	int compareX = Integer.parseInt(split[0]);
+		        	int compareY = Integer.parseInt(split[1]);
+		        	
+		        	//Query if the current point is inside the selection-Rectangle
+		        	if(compareX <= inputX2 && compareX >= inputX1 && compareY <= inputY2 && compareY >= inputY1) {
+        			} else {
+        				//if the point is not inside it, setting a variable to false so that this feature is not used for the final list
+        				isInSelection = false;
+        			}
+		        	
+		        } else {
+		        	//splitting the geometry String to get a list of the different values
+		        	String[] split = geometry.split(", ");
+		        	
+		        	//converting the string values to integer to make them comparable to the input parameters
+		        	for(int i = 0; i < 4; i++) {
+		        		int comparePoint = Integer.parseInt(split[i]);
+		        		
+		        		if(i%2==0) {
+		        			//if i%2 == 0, the list element represents an X-Coordinate
+		        			if(comparePoint <= inputX2 && comparePoint >= inputX1) {
+		        			} else {
+		        				isInSelection = false;
+		        			}
+		        		} else {
+		        			//if i%2 != 0, the list element represents an Y-Coordinate
+		        			if(comparePoint <= inputY2 && comparePoint >= inputY1) {
+		        			} else {
+		        				isInSelection = false;
+		        			}
+		        		}
+		        	}
+		        }
+		        
+		        //if the isInSelection variable is true, the id of the current feature is added to the final list
+		        if(isInSelection) {
+	        		System.out.println(id);
+	        		idList.add(id);
+	        	}
+		        
+		        //reset the variable to check the next feature
+		        isInSelection=true;
+			}	
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			System.out.println("selectFeatures() completed");
+		}
+		return idList.toArray(new Integer[0]);
+		
+		
 	}
 	
 	public void exportCSV() {

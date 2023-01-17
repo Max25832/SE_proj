@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class GUI extends JFrame implements ActionListener{
 	JMenuBar menuBar;
@@ -23,6 +24,7 @@ public class GUI extends JFrame implements ActionListener{
 	JLabel imageLabel;
     private DrawingPanel drawingPanel;
     public String clickedButton = "";
+    public Integer[] selectedFeatures;
     
     // Instantiate the database
     Database db = new Database();
@@ -427,7 +429,9 @@ public class GUI extends JFrame implements ActionListener{
 	        		g.setColor(new Color(77, 158, 220));
 	        		g.drawRect(selectX1, selectY1, widthSelect, heightSelect);
 	        		
-	        		
+	        		db.getAllFromDB();
+	        		selectedFeatures = db.selectFeatures(selectX1, selectY1, selectX2, selectY2);
+
 	        	}
 
 	        	// Write all user drawn lines to an Array List to be drawn later in code
