@@ -152,7 +152,8 @@ public class GUI extends JFrame implements ActionListener{
 		
 		//Toolbar
         toolbar = new JToolBar();
-		
+		toolbar.setBackground(new Color(250,250,250,150));
+        
 		pointButton = new JButton(new ImageIcon(getClass().getResource("point.png")));
 		pointButton.addActionListener(this);
 		
@@ -378,6 +379,7 @@ public class GUI extends JFrame implements ActionListener{
 	    private ArrayList<Dot> pointsList;
 	    private ArrayList<Line> lineList; //i want to make this for lines
 	    private ArrayList<Rect> rectList; //note there is an existing java calss Rectangle, but I'm making my own because of the parameters i want
+	    private ArrayList<DrawnShape> shapeList; //i'm thinking of making an additional super class
 	    private boolean drawing;
 	    
 	    //initializaing variables for use in drawing stuff
@@ -398,6 +400,7 @@ public class GUI extends JFrame implements ActionListener{
 	        pointsList = new ArrayList<>();
 	        lineList = new ArrayList<>();
 	        rectList = new ArrayList<>();
+	        shapeList = new ArrayList<>();
 	        addMouseListener(this);
 	        addMouseMotionListener(this);
 	    }
@@ -416,6 +419,7 @@ public class GUI extends JFrame implements ActionListener{
 	        	if(clickedButton.equals("point")) {
 	        		Dot d = new Dot(px, py);
 	        		pointsList.add(d);
+	        		shapeList.add(d);
 	        		db.insertShapes(d.geometry(), "'Point'");
 	        		
 	        		
@@ -440,6 +444,7 @@ public class GUI extends JFrame implements ActionListener{
 //	        		 g.setColor(Color.BLACK);
 	        		 Line lin = new Line(lineX1, lineX2, lineY1, lineY2); //takes user input and adds it to "lin" of class Line
 	        		 lineList.add(lin); //append new lin to ArrayList "lineList"
+	        		 shapeList.add(lin);
 	        		 // Send new line to the Database
 	        		 db.insertShapes(lin.geometry(), "'Line'");
 	        		 
@@ -450,8 +455,8 @@ public class GUI extends JFrame implements ActionListener{
 	        	if(clickedButton.equals("rectangle")) {
 	        		g.setColor(Color.BLACK);
 	        		Rect rec = new Rect(recX1, recY1 , recX2, recY2); 
-	        		System.out.println("RecX1 = " + recX1 + "RecX2 = " + recX2 + "RecY1 = " + recY1 + "RecY2 = " + recY2);
 	        		rectList.add(rec);//append new rec to list
+	        		shapeList.add(rec);
 
 	        		g.setColor(Color.BLACK); //not sure if there was a purpose to this being here twice... this was not me
 //	        		g.drawRect(recX1, recY1, widthRec, heightRec);
@@ -465,43 +470,80 @@ public class GUI extends JFrame implements ActionListener{
 	        	g.setColor(Color.BLACK);
 	        	//the following two for loops need to be outside of the clickedButton areas so that they remain drawn
 	        	//iterate through list of lines and draw all the user drawn lines
-	        	for (int i=0; i < lineList.size(); i++){
-	        		g.setColor(Color.black);
-	       			 Line lin2 = lineList.get(i); //loads next item from list into lin2 so that we can draw this out
-	       			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
-	       			 x2 = lin2.x2();
-	       			 y1 = lin2.y1();
-	       			 y2 = lin2.y2();
-	       			 
-	       			 g.drawLine(x1, x2, y1, y2); //draw the line
-                }
+//	        	for (int i=0; i < lineList.size(); i++){
+//	        		g.setColor(Color.black);
+//	       			 Line lin2 = lineList.get(i); //loads next item from list into lin2 so that we can draw this out
+//	       			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+//	       			 x2 = lin2.x2();
+//	       			 y1 = lin2.y1();
+//	       			 y2 = lin2.y2();
+//	       			 
+//	       			 g.drawLine(x1, x2, y1, y2); //draw the line
+//                }
+//	        	
+//	        	//iterate through list of rectanles and draw all the user drawn rectangles
+//	        	for (int i=0; i < rectList.size(); i++) {
+//        			 Rect rec2 = rectList.get(i); //loads next item from list into rec2 so that we can draw this out
+//        			 rx1 = rec2.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
+//        			 ry1 = rec2.recY1();
+//        			 rw = rec2.widthRec();
+//        			 rh = rec2.heightRec();
+//
+//        			 
+// 	        		 g.drawRect(rx1, ry1, rw, rh);
+//                }
+//	        	
+//	        	for (int i=0; i < pointsList.size(); i++) {
+//	        		Dot d2 = pointsList.get(i);
+//	        		xp = d2.px();
+//	        		yp = d2.py();
+//	        		
+//	        		g.fillOval(xp, yp, 5, 5);
+//	        		
+//	        	}
 	        	
-	        	//iterate through list of rectanles and draw all the user drawn rectangles
-	        	for (int i=0; i < rectList.size(); i++) {
-        			 Rect rec2 = rectList.get(i); //loads next item from list into rec2 so that we can draw this out
-        			 rx1 = rec2.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
-        			 ry1 = rec2.recY1();
-        			 rw = rec2.widthRec();
-        			 rh = rec2.heightRec();
-
-        			 
- 	        		 g.drawRect(rx1, ry1, rw, rh);
-                }
 	        	
-	        	for (int i=0; i < pointsList.size(); i++) {
-	        		Dot d2 = pointsList.get(i);
-	        		xp = d2.px();
-	        		yp = d2.py();
+	        	
+	        	for (int i=0; i < shapeList.size(); i++) {
 	        		
-	        		g.fillOval(xp, yp, 5, 5);
+	        		DrawnShape shp = shapeList.get(i);
+	        		
+	        		//points
+	        		if (shp.type == "Point") {
+	        			Dot d3 = (Dot) shp;
+	        			
+	        			xp = d3.px();
+		        		yp = d3.py();
+		        		
+		        		g.fillOval(xp, yp, 5, 5);
+	        		}
+	        		
+	        		//lines
+	        		if (shp.type == "Line") {
+	        			Line lin3 = (Line) shp; //loads next item from list into lin2 so that we can draw this out
+		       			
+	        			x1 = lin3.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+		       			x2 = lin3.x2();
+		       			y1 = lin3.y1();
+		       			y2 = lin3.y2();
+		       			 
+		       			g.drawLine(x1, x2, y1, y2); //draw the line
+	        		}
+	        		
+	        		//rectangles
+	        		if (shp.type == "Rectangle") {
+	        			Rect rec3 = (Rect) shp; //loads next item from list into rec2 so that we can draw this out
+	        			
+	        			rx1 = rec3.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
+	        			ry1 = rec3.recY1();
+	        			rw = rec3.widthRec();
+	        			rh = rec3.heightRec();
+ 
+	 	        		g.drawRect(rx1, ry1, rw, rh);
+	        		}
 	        		
 	        	}
 
-	        // Draw the current line being drawn (if any)
-			/*
-			 * if (drawing && points.size() > 0) { Point p = points.get(points.size() - 1);
-			 * g.drawLine(p.x, p.y, p.x, p.y); }
-			 */
 	    }
 
 	    // MouseListener methods

@@ -5,7 +5,7 @@ import java.awt.Graphics;
 
 //A class containing Lines
 
-public class Line {
+public class Line extends DrawnShape {
 	private int x1, y1, x2, y2; //this could maybe be made not private
 
     public Line(int x1, int y1, int x2, int y2) {
@@ -13,6 +13,8 @@ public class Line {
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
+        
+        super.type = "Line";
     }
     
     //methods to return back each element of the coordanite. There's probably a better way to do this. Okay now in retrospect
