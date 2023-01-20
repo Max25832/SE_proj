@@ -1,9 +1,10 @@
 package Sketchbook;
 
+//Class DrawnShape as a parent class of all other shapes
+// contains variable "type" which will list shape type
+
 public class DrawnShape {
 	
 	String type = null;
 
 }
-
-//something's going wrong with my implementation of this idea in GUI.java... need to figure out.

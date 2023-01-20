@@ -468,6 +468,8 @@ public class GUI extends JFrame implements ActionListener{
 	    
 			
 	        	g.setColor(Color.BLACK);
+	        	
+	        	//this implementation has been replaced by the DrawnShape version below - CAN BE DELETED NOW
 	        	//the following two for loops need to be outside of the clickedButton areas so that they remain drawn
 	        	//iterate through list of lines and draw all the user drawn lines
 //	        	for (int i=0; i < lineList.size(); i++){
@@ -502,7 +504,7 @@ public class GUI extends JFrame implements ActionListener{
 //	        		
 //	        	}
 	        	
-	        	
+	        	//NEW DRAWING IMPLEMENTATION USING DrawnShape CLASS
 	        	
 	        	for (int i=0; i < shapeList.size(); i++) {
 	        		
