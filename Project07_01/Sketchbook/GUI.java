@@ -19,7 +19,7 @@ public class GUI extends JFrame implements ActionListener{
 	          gisToolMenuItem, userRegistrationMenuItem, userLoginMenuItem;
 	JPopupMenu popupMenu;
 	JToolBar toolbar;
-	JButton pointButton, lineButton, rectangleButton, selectButton;
+	JButton pointButton, lineButton, rectangleButton, selectButton, moveButton, deleteButton;
 	JTextArea ta;
 	JLabel imageLabel;
     private DrawingPanel drawingPanel;
@@ -166,10 +166,20 @@ public class GUI extends JFrame implements ActionListener{
 		selectButton = new JButton(new ImageIcon(getClass().getResource("selection.png")));
 		selectButton.addActionListener(this);
 
+		moveButton = new JButton(new ImageIcon(getClass().getResource("move.png")));
+		moveButton.addActionListener(this);
+
+		deleteButton = new JButton(new ImageIcon(getClass().getResource("delete.png")));
+		deleteButton.addActionListener(this);
+
 		toolbar.add(pointButton);
 		toolbar.add(lineButton);
 		toolbar.add(rectangleButton);
 		toolbar.add(selectButton); 
+		toolbar.add(moveButton); 
+		toolbar.add(deleteButton); 
+
+
 
 		//End of Toolbar
 
