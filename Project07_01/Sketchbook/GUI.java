@@ -387,7 +387,7 @@ public class GUI extends JFrame implements ActionListener{
 		}
 		
 		if(e.getSource()==deleteButton) {
-			clickedButton = "delete"
+			//delete selection and/or delete all
 		}
 		
 	}
@@ -402,7 +402,8 @@ public class GUI extends JFrame implements ActionListener{
 	    private boolean drawing;
 	    
 	    //initializaing variables for use in drawing stuff
-	    int selectX1, selectX2, selectY1, selectY2;
+	    int selectX1, selectX2, selectY1, selectY2, selectClickX, selectClickY, selectRelX, selectRelY;
+	    int moveX, moveY, moveDistX, moveDistY;
 	    //points stuff
 	    int px, py;
 	    int xp, yp;
@@ -448,6 +449,22 @@ public class GUI extends JFrame implements ActionListener{
 	        	
 	        	// TODO: Make it so that the rectangle is transparent no matter what direction it is drawn
 	        	if(clickedButton.equals("select")) {
+	        		
+	        		if(selectClickX < selectRelX) {
+	        			selectX1 = selectClickX;
+	        			selectX2 = selectRelX;
+	        		} else {
+	        			selectX2 = selectClickX;
+	        			selectX1 = selectRelX;
+	        		}
+	        		if(selectClickY < selectRelY) {
+	        			selectY1 = selectClickY;
+	        			selectY2 = selectRelY;
+	        		} else {
+	        			selectY2 = selectClickY;
+	        			selectY1 = selectRelY;
+	        		}
+	        		
 	        		int widthSelect = selectX2 - selectX1;
 	        		int heightSelect = selectY2 - selectY1;
 	        		g.setColor(new Color(77, 158, 220, 50));
@@ -607,8 +624,8 @@ public class GUI extends JFrame implements ActionListener{
 	    		py = e.getY();
 	    	}
 	    	if(clickedButton.equals("select")) {
-	    		selectX1 = e.getX();
-	    		selectY1 = e.getY();
+	    		selectClickX = e.getX();
+	    		selectClickY = e.getY();
 	    	}
 	    	if(clickedButton.equals("rectangle")) {
 	    		recX1 = e.getX();
@@ -619,13 +636,18 @@ public class GUI extends JFrame implements ActionListener{
 	    		lineX1 = e.getX();
 	    		lineY1 = e.getY();
 	    	}
+	    	
+	    	if(clickedButton.equals("move")) {
+	    		moveX = e.getX();
+	    		moveY = e.getY();
+	    	}
 	        
 	    }
 
 	    public void mouseReleased(MouseEvent e) {
 	    	if(clickedButton.equals("select")) {
-	    		selectX2 = e.getX();
-	    		selectY2 = e.getY();
+	    		selectRelX = e.getX();
+	    		selectRelY = e.getY();
 	    	}
 	        drawing = false;
 	        repaint();
@@ -640,6 +662,36 @@ public class GUI extends JFrame implements ActionListener{
 	    	if(clickedButton.equals("line")) {
 	    		lineX2 = e.getX();
 	    		lineY2 = e.getY();
+	    	}
+	        drawing = false;
+	        repaint();
+	        
+	        if(clickedButton.equals("move")) {
+	    		moveDistX = e.getX() - moveX;
+	    		moveDistY = e.getY() - moveY;
+	    		
+//	    		for(DrawnShape p : selectedList) {
+//	    			for(DrawnShape s : shapeList) {
+//	    				if(s.id == p.id) {
+//	    					if(s.type == "Point") {
+//	    	    				s.px += moveDistX;
+//	    	    				s.py += moveDistY;
+//
+//	            			} else if(s.type == "Line") {
+//	            				s.x1 += moveDistX;
+//	            				s.x2 += moveDistX;
+//	            				s.y1 += moveDistY;
+//	            				s.y2 += moveDistY;
+//
+//	            			} else if(s.type == "Rectangle") {
+//	            				s.recX1 += moveDistX;
+//	            				s.recX2 += moveDistX;
+//	            				s.recY1 += moveDistY;
+//	            				s.recY2 += moveDistY;
+//	            			}
+//	    				}
+//	    			}
+//	    		}
 	    	}
 	        drawing = false;
 	        repaint();
