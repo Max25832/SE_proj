@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path=""/>
+	<classpathentry kind="src" path="libs"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-18">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Felipe/Documents/Homework/Software Engineering/SE_proj/Project07_01/libs/mysql-connector-java-8.0.22.jar">
+	<classpathentry kind="lib" path="C:/Users/idaha/OneDrive/Desktop/Studium/1. Semester/SoftwareEngineering/JavaProgrammierung/SE_proj/Project07_01/libs/mysql-connector-java-8.0.22.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Felipe/Documents/Homework/Software Engineering/SE_proj/Project07_01/libs/sqlite-jdbc-3.36.0.3.jar">
+	<classpathentry kind="lib" path="C:/Users/idaha/OneDrive/Desktop/Studium/1. Semester/SoftwareEngineering/JavaProgrammierung/SE_proj/Project07_01/libs/sqlite-jdbc-3.36.0.3.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="output" path=""/>
+	<classpathentry kind="lib" path="C:/Users/idaha/OneDrive/Desktop/Studium/1. Semester/SoftwareEngineering/JavaProgrammierung/SE_proj/Project07_01/libs/mysql-connector-java-8.0.13.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

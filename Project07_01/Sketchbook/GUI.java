@@ -382,6 +382,14 @@ public class GUI extends JFrame implements ActionListener{
 			clickedButton = "select";
 		}
 		
+		if(e.getSource()==moveButton) {
+			clickedButton = "move"
+		}
+		
+		if(e.getSource()==deleteButton) {
+			clickedButton = "delete"
+		}
+		
 	}
 	
 	public class DrawingPanel extends JPanel implements MouseListener, MouseMotionListener {
@@ -390,6 +398,7 @@ public class GUI extends JFrame implements ActionListener{
 	    private ArrayList<Line> lineList; //i want to make this for lines
 	    private ArrayList<Rect> rectList; //note there is an existing java calss Rectangle, but I'm making my own because of the parameters i want
 	    private ArrayList<DrawnShape> shapeList; //i'm thinking of making an additional super class
+	    public ArrayList<DrawnShape> selectedList; //list which should save the selected features
 	    private boolean drawing;
 	    
 	    //initializaing variables for use in drawing stuff
@@ -411,12 +420,14 @@ public class GUI extends JFrame implements ActionListener{
 	        lineList = new ArrayList<>();
 	        rectList = new ArrayList<>();
 	        shapeList = new ArrayList<>();
+	        selectedList = new ArrayList<>();
 	        addMouseListener(this);
 	        addMouseMotionListener(this);
 	    }
 
 	    public void paintComponent(Graphics g) {
 	        super.paintComponent(g);
+	    
 
 //	        	// This for block draws the points every time they get changed
 //	        	for (int i = 0; i < pointsList.size(); i++) {
@@ -442,10 +453,37 @@ public class GUI extends JFrame implements ActionListener{
 	        		g.setColor(new Color(77, 158, 220, 50));
 	        		g.fillRect(selectX1, selectY1, widthSelect, heightSelect);
 	        		g.setColor(new Color(77, 158, 220));
-	        		g.drawRect(selectX1, selectY1, widthSelect, heightSelect);
+	        		DrawnShape selectRect = g.drawRect(selectX1, selectY1, widthSelect, heightSelect);
 	        		
-	        		db.getAllFromDB();
-	        		selectedFeatures = db.selectFeatures(selectX1, selectY1, selectX2, selectY2);
+	        		for(DrawnShape s : shapeList) {
+	        			//methode intersects is of Class "Shape"
+//	        			if(s.intersects((Rectangle2D)selectRect)){
+//	        				selectedList.add(s);
+//	        				g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+//	        		        g.setColor(new Color(77, 158, 220));
+//	        		        g.draw(s);
+//	        			}
+	        			if(s.type == "Point") {
+	        				if(s.px <= selectX2 && s.px >= selectX1 && s.py <= selectY2 && s.py >= selectY1) {
+	        					selectedList.add(s);
+	        					g.setColor(new Color(77, 158, 220));
+		        		        g.draw(s);
+	            			}
+	        			} else if(s.type == "Line") {
+	        				if(s.x1 <= selectX2 && s.x1 >= selectX1 && s.x2 <= selectX2 && s.x2 >= selectX1 && s.y1 <= selectY2 && s.y1 >= selectY1 && s.y2 <= selectY2 && s.y2 >= selectY1) {
+	        					selectedList.add(s);
+	        					g.setColor(new Color(77, 158, 220));
+		        		        g.draw(s);
+	        				}
+	        			} else if(s.type == "Rectangle") {
+	        				if(s.recX1 <= selectX2 && s.recX1 >= selectX1 && s.recX2 <= selectX2 && s.recX2 >= selectX1 && s.recY1 <= selectY2 && s.recY1 >= selectY1 && s.recY2 <= selectY2 && s.recY2 >= selectY1) {
+	        					selectedList.add(s);
+	        					g.setColor(new Color(77, 158, 220));
+		        		        g.draw(s);
+	        				}
+	        			}
+	        		}
+
 
 	        	}
 
