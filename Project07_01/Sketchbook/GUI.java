@@ -1,6 +1,9 @@
 package Sketchbook;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -8,45 +11,60 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class GUI extends JFrame implements ActionListener{
 	JMenuBar menuBar;
-	JMenu fileMenu,graphicMenu, helpMenu, importSubMenu;
+	JMenu fileMenu,graphicMenu, helpMenu, importSubMenu, dataMenu;
 	JMenuItem newMenuItem, openMenuItem, textSubMenuItem, imageSubMenuItem, saveMenuItem, exitMenuItem, 
 	          cutMenuItem, copyMenuItem, pasteMenuItem, selectAllMenuItem, checkboxMenuItemShow, 
 	          checkboxMenuItemHide, radioButtonEngMenuItem, radioButtonDeMenuItem, colorChooserMenuItem, 
-	          gisToolMenuItem, userRegistrationMenuItem, userLoginMenuItem;
+	          gisToolMenuItem, userRegistrationMenuItem, userLoginMenuItem, importShpMenuItem, save2DbMenuItem, loadFromDbMenuItem, importCsvMenuItem, exportCsvMenuItem;
 	JPopupMenu popupMenu;
 	JToolBar toolbar;
-	JButton pointButton, lineButton, rectangleButton, selectButton, moveButton, deleteButton;
-	JTextArea ta;
+	JButton pointButton, lineButton, rectangleButton, selectButton, moveButton, deleteButton, slelectRectButton, slelectPointButton, slelectLinesButton;
+	JTextArea ta, taL,taR;
 	JLabel imageLabel;
     private DrawingPanel drawingPanel;
     public String clickedButton = "";
     public Integer[] selectedFeatures;
     
+    public ArrayList<DrawnShape> selectedList; //list which should save the selected features
+    public ArrayList<DrawnShape> unselectedList;
+        
     // Instantiate the database
     Database db = new Database();
+    
 
 
 	public GUI(){	
-		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+	
 		db.createTable();
-		
+	    selectedList = new ArrayList<>();
+
+		Color toolbarColor = new Color(34, 125, 179);
+		Color menuColor = new Color(34, 87, 179);
+        
 		setTitle("Sketchbook DEMO!");
 		menuBar = new JMenuBar();
-
+		menuBar.setBackground(menuColor);
+		
 		ta = new JTextArea();
-		ta.setBounds(10, 300, 500, 600);
-
-		imageLabel = new JLabel("");
-		imageLabel.setBounds(10, 10, 300, 200);
-		imageLabel.setBackground(getForeground().DARK_GRAY);
-
+		ta.setBackground(menuColor);
+//
+//		imageLabel = new JLabel("");
+//		imageLabel.setBounds(10, 10, 300, 200);
+//		imageLabel.setBackground(getForeground().DARK_GRAY);
+//
 		//File Menu 
 		fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
+		fileMenu.setForeground(Color.WHITE);
+
 
 		newMenuItem = new JMenuItem("New", new ImageIcon(getClass().getResource("new.png")));
 		newMenuItem.setMnemonic(KeyEvent.VK_N);
@@ -87,44 +105,83 @@ public class GUI extends JFrame implements ActionListener{
 		//End of File Menu
 
 		
+		//Data Menu 
+		dataMenu = new JMenu("Data");
+		dataMenu.setMnemonic(KeyEvent.VK_F);
+		dataMenu.setForeground(Color.WHITE);
+
+
 		
 		
-		//Java Graphic
-		graphicMenu = new JMenu("Graphic");
-		graphicMenu.setMnemonic(KeyEvent.VK_G);
-		//###add MenuListener
-		graphicMenu.addMenuListener(new MenuListener() {
-			@Override
-			public void menuCanceled(MenuEvent arg0) {
-			}
+		
+		importShpMenuItem = new JMenuItem("Import Shapefile", new ImageIcon(getClass().getResource("new.png")));
+		importShpMenuItem.setToolTipText("Import Data as Shapefile");
+		importShpMenuItem.addActionListener(this);
 
-			@Override
-			public void menuDeselected(MenuEvent arg0) {
-			}
+		save2DbMenuItem = new JMenuItem("Save to Database", new ImageIcon(getClass().getResource("open.png")));
+		save2DbMenuItem.setToolTipText("Save Selection to Database. If no Seletion, Saves all Data");
+		save2DbMenuItem.addActionListener(this);
 
-			@Override
-			public void menuSelected(MenuEvent e) {
-				if(e.getSource()==graphicMenu){
-					EventQueue.invokeLater(new Runnable() {
-						public void run() {
-							try {
-								GraphicDrawing2 line= new GraphicDrawing2();
-								JFrame f= new JFrame();
-								f.setTitle("Geometry Drawing Panel");
-								f.setBounds(450, 190, 500, 500);
-								f.getContentPane().add(line);
-								f.setVisible(true);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					});
-				}
-			}
-		});
+		loadFromDbMenuItem = new JMenuItem("Load from Database", new ImageIcon(getClass().getResource("save.png")));
+		loadFromDbMenuItem.setToolTipText("Load from Database");
+		loadFromDbMenuItem.addActionListener(this);
+
+		importCsvMenuItem = new JMenuItem("Import CSV", new ImageIcon(getClass().getResource("exit.png")));
+		importCsvMenuItem.setToolTipText("Import Data from CSV File");
+		importCsvMenuItem.addActionListener((event) -> System.exit(0));
+
+		exportCsvMenuItem = new JMenuItem("Export CSV", new ImageIcon(getClass().getResource("exit.png")));
+		exportCsvMenuItem.setToolTipText("Export Selection as CSV. If no Seletion, Saves all Data");
+		exportCsvMenuItem.addActionListener((event) -> System.exit(0));
+
+		dataMenu.add(importShpMenuItem);
+		dataMenu.add(loadFromDbMenuItem);
+		dataMenu.add(save2DbMenuItem);
+		dataMenu.add(importCsvMenuItem);
+		dataMenu.add(exportCsvMenuItem);
+		//End of Data Menu
+
+		
+		
+//		
+//		//Java Graphic
+//		graphicMenu = new JMenu("Graphic");
+//		graphicMenu.setMnemonic(KeyEvent.VK_G);
+//		//###add MenuListener
+//		graphicMenu.addMenuListener(new MenuListener() {
+//			@Override
+//			public void menuCanceled(MenuEvent arg0) {
+//			}
+//
+//			@Override
+//			public void menuDeselected(MenuEvent arg0) {
+//			}
+//
+//			@Override
+//			public void menuSelected(MenuEvent e) {
+//				if(e.getSource()==graphicMenu){
+//					EventQueue.invokeLater(new Runnable() {
+//						public void run() {
+//							try {
+//								GraphicDrawing2 line= new GraphicDrawing2();
+//								JFrame f= new JFrame();
+//								f.setTitle("Geometry Drawing Panel");
+//								f.setBounds(450, 190, 500, 500);
+//								f.getContentPane().add(line);
+//								f.setVisible(true);
+//							} catch (Exception e) {
+//								e.printStackTrace();
+//							}
+//						}
+//					});
+//				}
+//			}
+//		});
 	
 		helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
+		helpMenu.setForeground(Color.WHITE);
+
 		//###add MenuListener
 		helpMenu.addMenuListener(new MenuListener() {
 			@Override
@@ -144,50 +201,161 @@ public class GUI extends JFrame implements ActionListener{
 		});
 		
 		menuBar.add(fileMenu);
-		menuBar.add(graphicMenu);
+		menuBar.add(dataMenu);
+//		menuBar.add(graphicMenu);
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(helpMenu);
 		
 		setJMenuBar(menuBar);
 		
+		
 		//Toolbar
-        toolbar = new JToolBar();
-		toolbar.setBackground(new Color(250,250,250,150));
-        
-		pointButton = new JButton(new ImageIcon(getClass().getResource("point.png")));
-		pointButton.addActionListener(this);
+		toolbar = new JToolBar();
+		toolbar.setLocation(10, 5);
+		toolbar.setMargin(new Insets(3, 10, 5, 10));
+		toolbar.setFloatable(true);
+		
+
+
+		
+		
+		//#######################################################Unsure about this
+
 		
 		lineButton = new JButton(new ImageIcon(getClass().getResource("line_not.png")));
+		lineButton.setText("Line");
+		lineButton.setToolTipText("Draw Pines");
+		lineButton.setVerticalTextPosition(AbstractButton.CENTER);
+		lineButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
 		lineButton.addActionListener(this);
+		lineButton.setBorder(new RoundedBorder(35));
+        lineButton.setForeground(Color.BLACK);
+        lineButton.setContentAreaFilled(false);
+		
+		
+		
+		pointButton = new JButton(new ImageIcon(getClass().getResource("point.png")));
+		pointButton.setText("Point");
+		//pointButton.setFocusPainted(false);
+		pointButton.setToolTipText("Draw Points");
+		pointButton.setVerticalTextPosition(AbstractButton.CENTER);
+	    pointButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
+	    pointButton.addActionListener(this);
+		pointButton.setBorder(new RoundedBorder(35));
+        pointButton.setForeground(Color.BLACK);
+        pointButton.setContentAreaFilled(false);
+	
+		
+//		lineButton = new JButton(new ImageIcon(getClass().getResource("line_not.png")));
+//		lineButton.setText("Line");
+//		lineButton.setToolTipText("Draw Pines");
+//		lineButton.setVerticalTextPosition(AbstractButton.CENTER);
+//		lineButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
+//		lineButton.addActionListener(this);
 		
 		rectangleButton = new JButton(new ImageIcon(getClass().getResource("vector.png")));
+		rectangleButton.setText("Rectangle");
+		rectangleButton.setToolTipText("Draw Rectangles");
+		rectangleButton.setVerticalTextPosition(AbstractButton.CENTER);
+		rectangleButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
 		rectangleButton.addActionListener(this);
+		rectangleButton.setBorder(new RoundedBorder(35));
+        rectangleButton.setForeground(Color.BLACK);
+        rectangleButton.setContentAreaFilled(false);
+	
 		
+			
 		selectButton = new JButton(new ImageIcon(getClass().getResource("selection.png")));
+		selectButton.setText("Select All");
+		selectButton.setToolTipText("Select Items");
+		selectButton.setVerticalTextPosition(AbstractButton.CENTER);
+		selectButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
 		selectButton.addActionListener(this);
+		selectButton.setBorder(new RoundedBorder(35));
+        selectButton.setForeground(Color.BLACK);
+        selectButton.setContentAreaFilled(false);
+	
 
 		moveButton = new JButton(new ImageIcon(getClass().getResource("move.png")));
+		moveButton.setText("Move");
+		moveButton.setToolTipText("Move Objects");
+		moveButton.setVerticalTextPosition(AbstractButton.CENTER);
+		moveButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
 		moveButton.addActionListener(this);
+		moveButton.setBorder(new RoundedBorder(35));
+        moveButton.setForeground(Color.BLACK);
+        moveButton.setContentAreaFilled(false);
+	
 
 		deleteButton = new JButton(new ImageIcon(getClass().getResource("delete.png")));
+		deleteButton.setToolTipText("Delete Objects");
+		deleteButton.setText("Delete");
+		deleteButton.setVerticalTextPosition(AbstractButton.CENTER);
+		deleteButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
 		deleteButton.addActionListener(this);
+		deleteButton.setBorder(new RoundedBorder(35));
+        deleteButton.setForeground(Color.BLACK);
+        deleteButton.setContentAreaFilled(false);
+		
+		
+        slelectLinesButton = new JButton(new ImageIcon(getClass().getResource("selectline.png")));
+        slelectLinesButton.setToolTipText("Select all Lines");
+        slelectLinesButton.setText("Select Lines");
+        slelectLinesButton.setVerticalTextPosition(AbstractButton.CENTER);
+        slelectLinesButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
+        slelectLinesButton.addActionListener(this);
+        slelectLinesButton.setBorder(new RoundedBorder(35));
+        slelectLinesButton.setForeground(Color.BLACK);
+        slelectLinesButton.setContentAreaFilled(false);
+		
+		
+        slelectRectButton = new JButton(new ImageIcon(getClass().getResource("selectrect.png")));
+        slelectRectButton.setToolTipText("Select all Rectangles");
+        slelectRectButton.setText("Select Rectangles");
+        slelectRectButton.setVerticalTextPosition(AbstractButton.CENTER);
+        slelectRectButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
+        slelectRectButton.addActionListener(this);
+        slelectRectButton.setBorder(new RoundedBorder(35));
+        slelectRectButton.setForeground(Color.BLACK);
+        slelectRectButton.setContentAreaFilled(false);
+		
+        slelectPointButton = new JButton(new ImageIcon(getClass().getResource("slecetpoints.png")));
+		slelectPointButton.setToolTipText("Select all Points");
+		slelectPointButton.setText("Selcet Points");
+		slelectPointButton.setVerticalTextPosition(AbstractButton.CENTER);
+		slelectPointButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
+		slelectPointButton.addActionListener(this);
+		slelectPointButton.setBorder(new RoundedBorder(35));
+		slelectPointButton.setForeground(Color.BLACK);
+        slelectPointButton.setContentAreaFilled(false);
+		
 
+		 
+      GridLayout gridLay = new GridLayout(1,13);
+		toolbar.setLayout(gridLay);
 		toolbar.add(pointButton);
 		toolbar.add(lineButton);
 		toolbar.add(rectangleButton);
+		toolbar.add(Box.createRigidArea(new Dimension(4, 0)));
 		toolbar.add(selectButton); 
+		toolbar.add(slelectPointButton); 
+		toolbar.add(slelectRectButton); 
+		toolbar.add(slelectLinesButton); 
+		toolbar.add(Box.createRigidArea(new Dimension(4, 0)));
+		toolbar.add(Box.createRigidArea(new Dimension(4, 0)));
 		toolbar.add(moveButton); 
 		toolbar.add(deleteButton); 
-
-
+		
 
 		//End of Toolbar
 
 		drawingPanel = new DrawingPanel();
-        add(drawingPanel, BorderLayout.CENTER);
-
+		drawingPanel.setBackground(new Color(250,250,250));
+        drawingPanel.setBorder(new LineBorder(menuColor, 15, false));
 
 		
+        //drawingPanel.add(taL, BorderLayout.EAST);
+        //drawingPanel.add(taR, BorderLayout.WEST);
 		
 		//Popup Menu
 		popupMenu = new JPopupMenu();
@@ -277,12 +445,17 @@ public class GUI extends JFrame implements ActionListener{
 
 		//End of Popup Menu
 		
-		add(toolbar, BorderLayout.NORTH);
-		add(imageLabel, BorderLayout.CENTER);
-		add(ta, BorderLayout.SOUTH);
 		add(drawingPanel, BorderLayout.CENTER);
+		add(toolbar, BorderLayout.NORTH);
+		//add(imageLabel, BorderLayout.CENTER);
+		add(ta, BorderLayout.SOUTH);
 		setSize(600, 600);
 		setVisible(true);
+	}
+
+	private void setBorder(Border createEmptyBorder) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -383,12 +556,26 @@ public class GUI extends JFrame implements ActionListener{
 		}
 		
 		if(e.getSource()==moveButton) {
-			clickedButton = "move"
+			clickedButton = "move";
 		}
 		
 		if(e.getSource()==deleteButton) {
-			//delete selection and/or delete all
+			clickedButton = "delete";
+			selectedList.clear();
 		}
+		if(e.getSource()== slelectRectButton) {
+			clickedButton = "selectRect";
+		}
+		
+		if(e.getSource()==slelectPointButton) {
+			clickedButton = "selectPoint";
+			
+		}
+		if(e.getSource()==slelectLinesButton) {
+			clickedButton = "selectLine";
+		}
+			
+
 		
 	}
 	
@@ -398,7 +585,6 @@ public class GUI extends JFrame implements ActionListener{
 	    private ArrayList<Line> lineList; //i want to make this for lines
 	    private ArrayList<Rect> rectList; //note there is an existing java calss Rectangle, but I'm making my own because of the parameters i want
 	    private ArrayList<DrawnShape> shapeList; //i'm thinking of making an additional super class
-	    public ArrayList<DrawnShape> selectedList; //list which should save the selected features
 	    private boolean drawing;
 	    
 	    //initializaing variables for use in drawing stuff
@@ -421,14 +607,13 @@ public class GUI extends JFrame implements ActionListener{
 	        lineList = new ArrayList<>();
 	        rectList = new ArrayList<>();
 	        shapeList = new ArrayList<>();
-	        selectedList = new ArrayList<>();
+	        unselectedList = new ArrayList<>();
 	        addMouseListener(this);
 	        addMouseMotionListener(this);
 	    }
 
 	    public void paintComponent(Graphics g) {
 	        super.paintComponent(g);
-	    
 
 //	        	// This for block draws the points every time they get changed
 //	        	for (int i = 0; i < pointsList.size(); i++) {
@@ -448,8 +633,46 @@ public class GUI extends JFrame implements ActionListener{
 	        	}
 	        	
 	        	// TODO: Make it so that the rectangle is transparent no matter what direction it is drawn
+	        	if(clickedButton.equals("selectPoint")) {
+	        		Iterator<DrawnShape> itr = shapeList.iterator();
+	        		while(itr.hasNext()) {
+	        			DrawnShape shape = itr.next();
+	        			if(shape.type=="Point") {
+	        				selectedList.add(shape);
+	        				itr.remove();
+	        			}else {
+	        				unselectedList.add(shape);
+	        			}
+	        		}
+	        	}
+	        	
+	        	if(clickedButton.equals("selectLine")) {
+	        		Iterator<DrawnShape> itr = shapeList.iterator();
+	        		while(itr.hasNext()) {
+	        			DrawnShape shape = itr.next();
+	        			if(shape.type=="Line") {
+	        				selectedList.add(shape);
+	        				itr.remove();
+	        			}else {
+	        				unselectedList.add(shape);
+	        			}
+	        		}
+	        	}
+	        	
+	        	if(clickedButton.equals("selectRect")) {
+	        		Iterator<DrawnShape> itr = shapeList.iterator();
+	        		while(itr.hasNext()) {
+	        			DrawnShape shape = itr.next();
+	        			if(shape.type=="Rectangle") {
+	        				selectedList.add(shape);
+	        				itr.remove();
+	        			}else {
+	        				unselectedList.add(shape);
+	        			}
+	        		}
+	        	}
+	        	
 	        	if(clickedButton.equals("select")) {
-	        		
 	        		if(selectClickX < selectRelX) {
 	        			selectX1 = selectClickX;
 	        			selectX2 = selectRelX;
@@ -470,44 +693,81 @@ public class GUI extends JFrame implements ActionListener{
 	        		g.setColor(new Color(77, 158, 220, 50));
 	        		g.fillRect(selectX1, selectY1, widthSelect, heightSelect);
 	        		g.setColor(new Color(77, 158, 220));
-	        		DrawnShape selectRect = g.drawRect(selectX1, selectY1, widthSelect, heightSelect);
+	        		g.drawRect(selectX1, selectY1, widthSelect, heightSelect);
 	        		
-	        		for(DrawnShape s : shapeList) {
-	        			//methode intersects is of Class "Shape"
-//	        			if(s.intersects((Rectangle2D)selectRect)){
-//	        				selectedList.add(s);
-//	        				g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-//	        		        g.setColor(new Color(77, 158, 220));
-//	        		        g.draw(s);
-//	        			}
-	        			if(s.type == "Point") {
-	        				if(s.px <= selectX2 && s.px >= selectX1 && s.py <= selectY2 && s.py >= selectY1) {
-	        					selectedList.add(s);
-	        					g.setColor(new Color(77, 158, 220));
-		        		        g.draw(s);
+	        		//current issue: when deleting we have to delete the object also from shapeList --> all shapes are redrawn when we select something
+	        		
+	        		Iterator<DrawnShape> itr = shapeList.iterator();
+	        		while(itr.hasNext()) {
+	        			DrawnShape shape = itr.next();
+	        			if(shape.type == "Point") {
+	        				Dot dotSelect = (Dot) shape;
+	        				if(dotSelect.px <= selectX2 && dotSelect.px >= selectX1 && dotSelect.py <= selectY2 && dotSelect.py >= selectY1) {
+	        					selectedList.add(shape);
+	        					itr.remove();
+	            			} else {
+	            				unselectedList.add(shape);
 	            			}
-	        			} else if(s.type == "Line") {
-	        				if(s.x1 <= selectX2 && s.x1 >= selectX1 && s.x2 <= selectX2 && s.x2 >= selectX1 && s.y1 <= selectY2 && s.y1 >= selectY1 && s.y2 <= selectY2 && s.y2 >= selectY1) {
-	        					selectedList.add(s);
-	        					g.setColor(new Color(77, 158, 220));
-		        		        g.draw(s);
-	        				}
-	        			} else if(s.type == "Rectangle") {
-	        				if(s.recX1 <= selectX2 && s.recX1 >= selectX1 && s.recX2 <= selectX2 && s.recX2 >= selectX1 && s.recY1 <= selectY2 && s.recY1 >= selectY1 && s.recY2 <= selectY2 && s.recY2 >= selectY1) {
-	        					selectedList.add(s);
-	        					g.setColor(new Color(77, 158, 220));
-		        		        g.draw(s);
-	        				}
+	        			} else if (shape.type == "Line") {
+	        				Line lineSelect = (Line) shape;
+	        				if(lineSelect.x1 <= selectX2 && lineSelect.x1 >= selectX1 && lineSelect.x2 <= selectX2 && lineSelect.x2 >= selectX1 && lineSelect.y1 <= selectY2 && lineSelect.y1 >= selectY1 && lineSelect.y2 <= selectY2 && lineSelect.y2 >= selectY1) {
+	        					selectedList.add(shape);
+	        					itr.remove();
+	        				}else {
+	            				unselectedList.add(shape);
+	            			}
+	        			} else if (shape.type == "Rectangle") {
+	        				Rect rectSelect = (Rect) shape;
+	        				if(rectSelect.recX1 <= selectX2 && rectSelect.recX1 >= selectX1 && rectSelect.recX2 <= selectX2 && rectSelect.recX2 >= selectX1 && rectSelect.recY1 <= selectY2 && rectSelect.recY1 >= selectY1 && rectSelect.recY2 <= selectY2 && rectSelect.recY2 >= selectY1) {
+	        					selectedList.add(shape);
+	        					//shapeList.remove(s);
+	        					itr.remove();
+	        					System.out.println(rectSelect);
+	        				}else {
+	            				unselectedList.add(shape);
+	            			}
 	        			}
 	        		}
-
-
+	        	
+//	        		for(DrawnShape s : shapeList) {
+//	        			if(s.type == "Point") {
+//	        				Dot dotSelect = (Dot) s;
+//	        				if(dotSelect.px <= selectX2 && dotSelect.px >= selectX1 && dotSelect.py <= selectY2 && dotSelect.py >= selectY1) {
+//	        					selectedList.add(s);
+////	        					int index = shapeList.indexOf(s);
+//	        					//delete object from shapeList
+//	        					System.out.println(dotSelect);
+//	            			} else {
+//	            				unselectedList.add(s);
+//	            			}
+//	        			} else if(s.type == "Line") {
+//	        				Line lineSelect = (Line) s;
+//	        				if(lineSelect.x1 <= selectX2 && lineSelect.x1 >= selectX1 && lineSelect.x2 <= selectX2 && lineSelect.x2 >= selectX1 && lineSelect.y1 <= selectY2 && lineSelect.y1 >= selectY1 && lineSelect.y2 <= selectY2 && lineSelect.y2 >= selectY1) {
+//	        					selectedList.add(s);
+//	        					//shapeList.remove(s);
+//	        					System.out.println(lineSelect);
+//	        				}else {
+//	            				unselectedList.add(s);
+//	            			}
+//	        			} else if(s.type == "Rectangle") {
+//	        				Rect rectSelect = (Rect) s;
+//	        				if(rectSelect.recX1 <= selectX2 && rectSelect.recX1 >= selectX1 && rectSelect.recX2 <= selectX2 && rectSelect.recX2 >= selectX1 && rectSelect.recY1 <= selectY2 && rectSelect.recY1 >= selectY1 && rectSelect.recY2 <= selectY2 && rectSelect.recY2 >= selectY1) {
+//	        					selectedList.add(s);
+//	        					//shapeList.remove(s);
+//	        					System.out.println(rectSelect);
+//	        				}else {
+//	            				unselectedList.add(s);
+//	            			}
+//	        			}
+//	        		}
+	        	  		
+	        		
 	        	}
 
 	        	// Write all user drawn lines to an Array List to be drawn later in code
 	        	if (clickedButton.equals("line")) {
 //	        		 g.setColor(Color.BLACK);
-	        		 Line lin = new Line(lineX1, lineX2, lineY1, lineY2); //takes user input and adds it to "lin" of class Line
+	        		 Line lin = new Line(lineX1, lineY1, lineX2, lineY2); //takes user input and adds it to "lin" of class Line
 	        		 lineList.add(lin); //append new lin to ArrayList "lineList"
 	        		 shapeList.add(lin);
 	        		 // Send new line to the Database
@@ -570,52 +830,142 @@ public class GUI extends JFrame implements ActionListener{
 //	        	}
 	        	
 	        	//NEW DRAWING IMPLEMENTATION USING DrawnShape CLASS
+
 	        	
-	        	for (int i=0; i < shapeList.size(); i++) {
-	        		
-	        		DrawnShape shp = shapeList.get(i);
-	        		
-	        		//points
-	        		if (shp.type == "Point") {
-	        			Dot d3 = (Dot) shp;
-	        			
-	        			xp = d3.px();
-		        		yp = d3.py();
+	        	
+	        	if(selectedList.size() == 0) {
+	        		for (DrawnShape shp : shapeList) {
 		        		
-		        		g.fillOval(xp, yp, 5, 5);
-	        		}
-	        		
-	        		//lines
-	        		if (shp.type == "Line") {
-	        			Line lin3 = (Line) shp; //loads next item from list into lin2 so that we can draw this out
-		       			
-	        			x1 = lin3.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
-		       			x2 = lin3.x2();
-		       			y1 = lin3.y1();
-		       			y2 = lin3.y2();
-		       			 
-		       			g.drawLine(x1, x2, y1, y2); //draw the line
-	        		}
-	        		
-	        		//rectangles
-	        		if (shp.type == "Rectangle") {
-	        			Rect rec3 = (Rect) shp; //loads next item from list into rec2 so that we can draw this out
-	        			
-	        			rx1 = rec3.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
-	        			ry1 = rec3.recY1();
-	        			rw = rec3.widthRec();
-	        			rh = rec3.heightRec();
- 
-	 	        		g.drawRect(rx1, ry1, rw, rh);
-	        		}
+		        		//points
+		        		if (shp.type == "Point") {
+		        			Dot d3 = (Dot) shp;
+		        			
+		        			xp = d3.px();
+			        		yp = d3.py();
+			        		
+			        		g.fillOval(xp, yp, 5, 5);
+		        		}
+		        		
+		        		//lines
+		        		if (shp.type == "Line") {
+		        			Line lin3 = (Line) shp; //loads next item from list into lin2 so that we can draw this out
+			       			
+		        			x1 = lin3.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+			       			x2 = lin3.x2();
+			       			y1 = lin3.y1();
+			       			y2 = lin3.y2();
+			       			 
+			       			g.drawLine(x1, y1, x2, y2); //draw the line
+		        		}
+		        		
+		        		//rectangles
+		        		if (shp.type == "Rectangle") {
+		        			Rect rec3 = (Rect) shp; //loads next item from list into rec2 so that we can draw this out
+		        			
+		        			rx1 = rec3.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
+		        			ry1 = rec3.recY1();
+		        			rw = rec3.widthRec();
+		        			rh = rec3.heightRec();
+	 
+		 	        		g.drawRect(rx1, ry1, rw, rh);
+		        		}	
+		        	}	
+	        	} else {
+	        		for (DrawnShape shp : unselectedList) {
+		        		
+		        		//points
+		        		if (shp.type == "Point") {
+		        			Dot d3 = (Dot) shp;
+		        			
+		        			xp = d3.px();
+			        		yp = d3.py();
+			        		
+			        		g.fillOval(xp, yp, 5, 5);
+		        		}
+		        		
+		        		//lines
+		        		if (shp.type == "Line") {
+		        			Line lin3 = (Line) shp; //loads next item from list into lin2 so that we can draw this out
+			       			
+		        			x1 = lin3.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+			       			x2 = lin3.x2();
+			       			y1 = lin3.y1();
+			       			y2 = lin3.y2();
+			       			 
+			       			g.drawLine(x1, y1, x2, y2); //draw the line
+		        		}
+		        		
+		        		//rectangles
+		        		if (shp.type == "Rectangle") {
+		        			Rect rec3 = (Rect) shp; //loads next item from list into rec2 so that we can draw this out
+		        			
+		        			rx1 = rec3.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
+		        			ry1 = rec3.recY1();
+		        			rw = rec3.widthRec();
+		        			rh = rec3.heightRec();
+	 
+		 	        		g.drawRect(rx1, ry1, rw, rh);
+		        		}
+		        		
+		        	}
+		        	
+		        	g.setColor(new Color(77, 158, 220));
+		        	//draw selectedList
+		        	for (DrawnShape shp : selectedList) {
+		        		
+		        		//points
+		        		if (shp.type == "Point") {
+		        			Dot d3 = (Dot) shp;
+		        			
+		        			xp = d3.px();
+			        		yp = d3.py();
+			        		
+			        		g.fillOval(xp, yp, 5, 5);
+		        		}
+		        		
+		        		//lines
+		        		if (shp.type == "Line") {
+		        			Line lin3 = (Line) shp; //loads next item from list into lin2 so that we can draw this out
+			       			
+		        			x1 = lin3.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+			       			x2 = lin3.x2();
+			       			y1 = lin3.y1();
+			       			y2 = lin3.y2();
+			       			 
+			       			g.drawLine(x1, y1, x2, y2); //draw the line
+		        		}
+		        		
+		        		//rectangles
+		        		if (shp.type == "Rectangle") {
+		        			Rect rec3 = (Rect) shp; //loads next item from list into rec2 so that we can draw this out
+		        			
+		        			rx1 = rec3.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
+		        			ry1 = rec3.recY1();
+		        			rw = rec3.widthRec();
+		        			rh = rec3.heightRec();
+	 
+		 	        		g.drawRect(rx1, ry1, rw, rh);
+		        		}
+		        		
+		        	}
 	        		
 	        	}
+	        	
+	        	
 
 	    }
 
 	    // MouseListener methods
 	    public void mousePressed(MouseEvent e) {
+
+	    	
 	    	if(clickedButton.equals("point")) {
+	    		//add selectedList to shapeList
+	    		for(DrawnShape s : selectedList) {
+	    			shapeList.add(s);
+	    		}
+	    		//empty selectedList
+	    		selectedList.clear();
 //	    		points.add(e.getPoint());
 //	    		db.insertShapes(e.getPoint().toString(), "'Point'");
 		        drawing = true;
@@ -624,15 +974,33 @@ public class GUI extends JFrame implements ActionListener{
 	    		py = e.getY();
 	    	}
 	    	if(clickedButton.equals("select")) {
+	    		//add selectedList to shapeList
+	    		for(DrawnShape s : selectedList) {
+	    			shapeList.add(s);
+	    		}
+	    		//empty selectedList
+	    		selectedList.clear();
 	    		selectClickX = e.getX();
 	    		selectClickY = e.getY();
 	    	}
 	    	if(clickedButton.equals("rectangle")) {
+	    		//add selectedList to shapeList
+	    		for(DrawnShape s : selectedList) {
+	    			shapeList.add(s);
+	    		}
+	    		//empty selectedList
+	    		selectedList.clear();
 	    		recX1 = e.getX();
 	    		recY1 = e.getY();
 	    	}
 	        
 	    	if(clickedButton.equals("line")) {
+	    		//add selectedList to shapeList
+	    		for(DrawnShape s : selectedList) {
+	    			shapeList.add(s);
+	    		}
+	    		//empty selectedList
+	    		selectedList.clear();
 	    		lineX1 = e.getX();
 	    		lineY1 = e.getY();
 	    	}
@@ -670,28 +1038,25 @@ public class GUI extends JFrame implements ActionListener{
 	    		moveDistX = e.getX() - moveX;
 	    		moveDistY = e.getY() - moveY;
 	    		
-//	    		for(DrawnShape p : selectedList) {
-//	    			for(DrawnShape s : shapeList) {
-//	    				if(s.id == p.id) {
-//	    					if(s.type == "Point") {
-//	    	    				s.px += moveDistX;
-//	    	    				s.py += moveDistY;
-//
-//	            			} else if(s.type == "Line") {
-//	            				s.x1 += moveDistX;
-//	            				s.x2 += moveDistX;
-//	            				s.y1 += moveDistY;
-//	            				s.y2 += moveDistY;
-//
-//	            			} else if(s.type == "Rectangle") {
-//	            				s.recX1 += moveDistX;
-//	            				s.recX2 += moveDistX;
-//	            				s.recY1 += moveDistY;
-//	            				s.recY2 += moveDistY;
-//	            			}
-//	    				}
-//	    			}
-//	    		}
+	    		for(DrawnShape p : selectedList) {
+	    			if(p.type == "Point") {
+	    				Dot moveDot = (Dot) p;
+	    				moveDot.px += moveDistX;
+	    				moveDot.py += moveDistY;
+	    			} else if (p.type == "Line") {
+	    				Line moveLine = (Line) p;
+	    				moveLine.x1 += moveDistX;
+	    				moveLine.x2 += moveDistX;
+	    				moveLine.y1 += moveDistY;
+	    				moveLine.y2 += moveDistY;
+	    			} else if (p.type == "Rectangle") {
+	    				Rect moveRect = (Rect) p;
+	    				moveRect.recX1 += moveDistX;
+	    				moveRect.recX2 += moveDistX;
+	    				moveRect.recY1 += moveDistY;
+	    				moveRect.recY2 += moveDistY;
+	    			}
+	    		}
 	    	}
 	        drawing = false;
 	        repaint();

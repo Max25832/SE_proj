@@ -1,7 +1,7 @@
 package Sketchbook;
 
 public class Rect extends DrawnShape{
-	private int recX1, recX2, recY1, recY2;
+	public int recX1, recX2, recY1, recY2;
 	int widthRec, heightRec;
 	
 	public Rect(int recX1, int recY1, int recX2, int recY2) {

@@ -1,7 +1,7 @@
 package Sketchbook;
 
 public class Dot extends DrawnShape {
-	private int px, py;
+	public int px, py;
 	
 	public Dot(int px, int py) {
         this.px = px;
