@@ -1,6 +1,9 @@
 package Sketchbook;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -12,41 +15,57 @@ import java.util.LinkedList;
 
 public class GUI extends JFrame implements ActionListener{
 	JMenuBar menuBar;
-	JMenu fileMenu,graphicMenu, helpMenu, importSubMenu;
+	JMenu fileMenu,graphicMenu, helpMenu, importSubMenu, dataMenu;
 	JMenuItem newMenuItem, openMenuItem, textSubMenuItem, imageSubMenuItem, saveMenuItem, exitMenuItem, 
 	          cutMenuItem, copyMenuItem, pasteMenuItem, selectAllMenuItem, checkboxMenuItemShow, 
 	          checkboxMenuItemHide, radioButtonEngMenuItem, radioButtonDeMenuItem, colorChooserMenuItem, 
-	          gisToolMenuItem, userRegistrationMenuItem, userLoginMenuItem;
+	          gisToolMenuItem, userRegistrationMenuItem, userLoginMenuItem, importShpMenuItem, save2DbMenuItem, loadFromDbMenuItem, importCsvMenuItem, exportCsvMenuItem;
 	JPopupMenu popupMenu;
 	JToolBar toolbar;
-	JButton pointButton, lineButton, rectangleButton, selectButton, moveButton, deleteButton;
-	JTextArea ta;
+	JButton pointButton, lineButton, rectangleButton, selectButton, moveButton, deleteButton, slelectRectButton, slelectPointButton, slelectLinesButton;
+	JTextArea ta, taL,taR;
 	JLabel imageLabel;
     private DrawingPanel drawingPanel;
     public String clickedButton = "";
     public Integer[] selectedFeatures;
-    
+        
     // Instantiate the database
     Database db = new Database();
 
 
 	public GUI(){	
-		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+	
 		db.createTable();
 		
+		Color toolbarColor = new Color(34, 125, 179);
+		Color menuColor = new Color(34, 87, 179);
+        
 		setTitle("Sketchbook DEMO!");
 		menuBar = new JMenuBar();
-
+		menuBar.setBackground(menuColor);
+		
 		ta = new JTextArea();
-		ta.setBounds(10, 300, 500, 600);
+		ta.setBackground(menuColor);
 
-		imageLabel = new JLabel("");
-		imageLabel.setBounds(10, 10, 300, 200);
-		imageLabel.setBackground(getForeground().DARK_GRAY);
+		taL = new JTextArea();
+		taL.setBackground(menuColor);
+		
+		taR = new JTextArea();
+		taR.setBackground(menuColor);
 
+//
+//		imageLabel = new JLabel("");
+//		imageLabel.setBounds(10, 10, 300, 200);
+//		imageLabel.setBackground(getForeground().DARK_GRAY);
+//
 		//File Menu 
 		fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
+		fileMenu.setForeground(Color.WHITE);
+
 
 		newMenuItem = new JMenuItem("New", new ImageIcon(getClass().getResource("new.png")));
 		newMenuItem.setMnemonic(KeyEvent.VK_N);
@@ -87,44 +106,83 @@ public class GUI extends JFrame implements ActionListener{
 		//End of File Menu
 
 		
+		//Data Menu 
+		dataMenu = new JMenu("Data");
+		dataMenu.setMnemonic(KeyEvent.VK_F);
+		dataMenu.setForeground(Color.WHITE);
+
+
 		
 		
-		//Java Graphic
-		graphicMenu = new JMenu("Graphic");
-		graphicMenu.setMnemonic(KeyEvent.VK_G);
-		//###add MenuListener
-		graphicMenu.addMenuListener(new MenuListener() {
-			@Override
-			public void menuCanceled(MenuEvent arg0) {
-			}
+		
+		importShpMenuItem = new JMenuItem("Import Shapefile", new ImageIcon(getClass().getResource("new.png")));
+		importShpMenuItem.setToolTipText("Import Data as Shapefile");
+		importShpMenuItem.addActionListener(this);
 
-			@Override
-			public void menuDeselected(MenuEvent arg0) {
-			}
+		save2DbMenuItem = new JMenuItem("Save to Database", new ImageIcon(getClass().getResource("open.png")));
+		save2DbMenuItem.setToolTipText("Save Selection to Database. If no Seletion, Saves all Data");
+		save2DbMenuItem.addActionListener(this);
 
-			@Override
-			public void menuSelected(MenuEvent e) {
-				if(e.getSource()==graphicMenu){
-					EventQueue.invokeLater(new Runnable() {
-						public void run() {
-							try {
-								GraphicDrawing2 line= new GraphicDrawing2();
-								JFrame f= new JFrame();
-								f.setTitle("Geometry Drawing Panel");
-								f.setBounds(450, 190, 500, 500);
-								f.getContentPane().add(line);
-								f.setVisible(true);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					});
-				}
-			}
-		});
+		loadFromDbMenuItem = new JMenuItem("Load from Database", new ImageIcon(getClass().getResource("save.png")));
+		loadFromDbMenuItem.setToolTipText("Load from Database");
+		loadFromDbMenuItem.addActionListener(this);
+
+		importCsvMenuItem = new JMenuItem("Import CSV", new ImageIcon(getClass().getResource("exit.png")));
+		importCsvMenuItem.setToolTipText("Import Data from CSV File");
+		importCsvMenuItem.addActionListener((event) -> System.exit(0));
+
+		exportCsvMenuItem = new JMenuItem("Export CSV", new ImageIcon(getClass().getResource("exit.png")));
+		exportCsvMenuItem.setToolTipText("Export Selection as CSV. If no Seletion, Saves all Data");
+		exportCsvMenuItem.addActionListener((event) -> System.exit(0));
+
+		dataMenu.add(importShpMenuItem);
+		dataMenu.add(loadFromDbMenuItem);
+		dataMenu.add(save2DbMenuItem);
+		dataMenu.add(importCsvMenuItem);
+		dataMenu.add(exportCsvMenuItem);
+		//End of Data Menu
+
+		
+		
+//		
+//		//Java Graphic
+//		graphicMenu = new JMenu("Graphic");
+//		graphicMenu.setMnemonic(KeyEvent.VK_G);
+//		//###add MenuListener
+//		graphicMenu.addMenuListener(new MenuListener() {
+//			@Override
+//			public void menuCanceled(MenuEvent arg0) {
+//			}
+//
+//			@Override
+//			public void menuDeselected(MenuEvent arg0) {
+//			}
+//
+//			@Override
+//			public void menuSelected(MenuEvent e) {
+//				if(e.getSource()==graphicMenu){
+//					EventQueue.invokeLater(new Runnable() {
+//						public void run() {
+//							try {
+//								GraphicDrawing2 line= new GraphicDrawing2();
+//								JFrame f= new JFrame();
+//								f.setTitle("Geometry Drawing Panel");
+//								f.setBounds(450, 190, 500, 500);
+//								f.getContentPane().add(line);
+//								f.setVisible(true);
+//							} catch (Exception e) {
+//								e.printStackTrace();
+//							}
+//						}
+//					});
+//				}
+//			}
+//		});
 	
 		helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
+		helpMenu.setForeground(Color.WHITE);
+
 		//###add MenuListener
 		helpMenu.addMenuListener(new MenuListener() {
 			@Override
@@ -144,50 +202,161 @@ public class GUI extends JFrame implements ActionListener{
 		});
 		
 		menuBar.add(fileMenu);
-		menuBar.add(graphicMenu);
+		menuBar.add(dataMenu);
+//		menuBar.add(graphicMenu);
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(helpMenu);
 		
 		setJMenuBar(menuBar);
 		
+		
 		//Toolbar
-        toolbar = new JToolBar();
-		toolbar.setBackground(new Color(250,250,250,150));
-        
-		pointButton = new JButton(new ImageIcon(getClass().getResource("point.png")));
-		pointButton.addActionListener(this);
+		toolbar = new JToolBar();
+		toolbar.setLocation(10, 5);
+		toolbar.setMargin(new Insets(3, 10, 5, 10));
+		toolbar.setFloatable(true);
+		
+
+
+		
+		
+		//#######################################################Unsure about this
+
 		
 		lineButton = new JButton(new ImageIcon(getClass().getResource("line_not.png")));
+		lineButton.setText("Line");
+		lineButton.setToolTipText("Draw Pines");
+		lineButton.setVerticalTextPosition(AbstractButton.CENTER);
+		lineButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
 		lineButton.addActionListener(this);
+		lineButton.setBorder(new RoundedBorder(35));
+        lineButton.setForeground(Color.BLACK);
+        lineButton.setContentAreaFilled(false);
+		
+		
+		
+		pointButton = new JButton(new ImageIcon(getClass().getResource("point.png")));
+		pointButton.setText("Point");
+		//pointButton.setFocusPainted(false);
+		pointButton.setToolTipText("Draw Points");
+		pointButton.setVerticalTextPosition(AbstractButton.CENTER);
+	    pointButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
+	    pointButton.addActionListener(this);
+		pointButton.setBorder(new RoundedBorder(35));
+        pointButton.setForeground(Color.BLACK);
+        pointButton.setContentAreaFilled(false);
+	
+		
+//		lineButton = new JButton(new ImageIcon(getClass().getResource("line_not.png")));
+//		lineButton.setText("Line");
+//		lineButton.setToolTipText("Draw Pines");
+//		lineButton.setVerticalTextPosition(AbstractButton.CENTER);
+//		lineButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
+//		lineButton.addActionListener(this);
 		
 		rectangleButton = new JButton(new ImageIcon(getClass().getResource("vector.png")));
+		rectangleButton.setText("Rectangle");
+		rectangleButton.setToolTipText("Draw Rectangles");
+		rectangleButton.setVerticalTextPosition(AbstractButton.CENTER);
+		rectangleButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
 		rectangleButton.addActionListener(this);
+		rectangleButton.setBorder(new RoundedBorder(35));
+        rectangleButton.setForeground(Color.BLACK);
+        rectangleButton.setContentAreaFilled(false);
+	
 		
+			
 		selectButton = new JButton(new ImageIcon(getClass().getResource("selection.png")));
+		selectButton.setText("Select All");
+		selectButton.setToolTipText("Select Items");
+		selectButton.setVerticalTextPosition(AbstractButton.CENTER);
+		selectButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
 		selectButton.addActionListener(this);
+		selectButton.setBorder(new RoundedBorder(35));
+        selectButton.setForeground(Color.BLACK);
+        selectButton.setContentAreaFilled(false);
+	
 
 		moveButton = new JButton(new ImageIcon(getClass().getResource("move.png")));
+		moveButton.setText("Move");
+		moveButton.setToolTipText("Move Objects");
+		moveButton.setVerticalTextPosition(AbstractButton.CENTER);
+		moveButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
 		moveButton.addActionListener(this);
+		moveButton.setBorder(new RoundedBorder(35));
+        moveButton.setForeground(Color.BLACK);
+        moveButton.setContentAreaFilled(false);
+	
 
 		deleteButton = new JButton(new ImageIcon(getClass().getResource("delete.png")));
+		deleteButton.setToolTipText("Delete Objects");
+		deleteButton.setText("Delete");
+		deleteButton.setVerticalTextPosition(AbstractButton.CENTER);
+		deleteButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
 		deleteButton.addActionListener(this);
+		deleteButton.setBorder(new RoundedBorder(35));
+        deleteButton.setForeground(Color.BLACK);
+        deleteButton.setContentAreaFilled(false);
+		
+		
+        slelectLinesButton = new JButton(new ImageIcon(getClass().getResource("delete.png")));
+        slelectLinesButton.setToolTipText("Select all Lines");
+        slelectLinesButton.setText("Select Lines");
+        slelectLinesButton.setVerticalTextPosition(AbstractButton.CENTER);
+        slelectLinesButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
+        slelectLinesButton.addActionListener(this);
+        slelectLinesButton.setBorder(new RoundedBorder(35));
+        slelectLinesButton.setForeground(Color.BLACK);
+        slelectLinesButton.setContentAreaFilled(false);
+		
+		
+        slelectRectButton = new JButton(new ImageIcon(getClass().getResource("delete.png")));
+        slelectRectButton.setToolTipText("Select all Rectangles");
+        slelectRectButton.setText("Select Rectangles");
+        slelectRectButton.setVerticalTextPosition(AbstractButton.CENTER);
+        slelectRectButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
+        slelectRectButton.addActionListener(this);
+        slelectRectButton.setBorder(new RoundedBorder(35));
+        slelectRectButton.setForeground(Color.BLACK);
+        slelectRectButton.setContentAreaFilled(false);
+		
+        slelectPointButton = new JButton(new ImageIcon(getClass().getResource("delete.png")));
+		slelectPointButton.setToolTipText("Select all Points");
+		slelectPointButton.setText("Selcet Points");
+		slelectPointButton.setVerticalTextPosition(AbstractButton.CENTER);
+		slelectPointButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
+		slelectPointButton.addActionListener(this);
+		slelectPointButton.setBorder(new RoundedBorder(35));
+		slelectPointButton.setForeground(Color.BLACK);
+        slelectPointButton.setContentAreaFilled(false);
+		
 
+		 
+      GridLayout gridLay = new GridLayout(1,13);
+		toolbar.setLayout(gridLay);
 		toolbar.add(pointButton);
 		toolbar.add(lineButton);
 		toolbar.add(rectangleButton);
+		toolbar.add(Box.createRigidArea(new Dimension(4, 0)));
 		toolbar.add(selectButton); 
+		toolbar.add(slelectPointButton); 
+		toolbar.add(slelectRectButton); 
+		toolbar.add(slelectLinesButton); 
+		toolbar.add(Box.createRigidArea(new Dimension(4, 0)));
+		toolbar.add(Box.createRigidArea(new Dimension(4, 0)));
 		toolbar.add(moveButton); 
 		toolbar.add(deleteButton); 
-
-
+		
 
 		//End of Toolbar
 
 		drawingPanel = new DrawingPanel();
-        add(drawingPanel, BorderLayout.CENTER);
-
+		drawingPanel.setBackground(new Color(190,190,190));
+        drawingPanel.setBorder(new LineBorder(menuColor, 15, false));
 
 		
+        //drawingPanel.add(taL, BorderLayout.EAST);
+        //drawingPanel.add(taR, BorderLayout.WEST);
 		
 		//Popup Menu
 		popupMenu = new JPopupMenu();
@@ -277,12 +446,17 @@ public class GUI extends JFrame implements ActionListener{
 
 		//End of Popup Menu
 		
-		add(toolbar, BorderLayout.NORTH);
-		add(imageLabel, BorderLayout.CENTER);
-		add(ta, BorderLayout.SOUTH);
 		add(drawingPanel, BorderLayout.CENTER);
+		add(toolbar, BorderLayout.NORTH);
+		//add(imageLabel, BorderLayout.CENTER);
+		add(ta, BorderLayout.SOUTH);
 		setSize(600, 600);
 		setVisible(true);
+	}
+
+	private void setBorder(Border createEmptyBorder) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
