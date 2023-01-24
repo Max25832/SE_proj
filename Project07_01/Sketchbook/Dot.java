@@ -1,13 +1,14 @@
 package Sketchbook;
 
 public class Dot extends DrawnShape {
-	private int px, py;
+	public int px, py;
 	
 	public Dot(int px, int py) {
         this.px = px;
         this.py = py;
         
         super.type = "Point";
+        super.geometry = px + ", " + py;
 
     }	
 	public int px() {

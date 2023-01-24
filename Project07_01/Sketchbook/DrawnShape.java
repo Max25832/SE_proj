@@ -6,5 +6,6 @@ package Sketchbook;
 public class DrawnShape {
 	
 	String type = null;
+	String geometry = null;
 
 }

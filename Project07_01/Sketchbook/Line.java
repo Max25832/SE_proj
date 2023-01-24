@@ -6,7 +6,7 @@ import java.awt.Graphics;
 //A class containing Lines
 
 public class Line extends DrawnShape {
-	private int x1, y1, x2, y2; //this could maybe be made not private
+	public int x1, y1, x2, y2; //this could maybe be made not private
 
     public Line(int x1, int y1, int x2, int y2) {
         this.x1 = x1;
@@ -15,6 +15,7 @@ public class Line extends DrawnShape {
         this.y2 = y2;
         
         super.type = "Line";
+        super.geometry = x1 + ", " + x2 + ", " + y1 + ", " + y2;
     }
     
     //methods to return back each element of the coordanite. There's probably a better way to do this. Okay now in retrospect
@@ -56,6 +57,7 @@ public class Line extends DrawnShape {
     
     public String geometry() {
     	String geometry = x1 + ", " + x2 + ", " + y1 + ", " + y2;
+    	super.geometry = this.geometry;
     	return geometry;
     }
 
