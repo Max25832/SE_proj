@@ -7,6 +7,17 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.geotools.data.FileDataStore;
+import org.geotools.data.FileDataStoreFinder;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.map.FeatureLayer;
+import org.geotools.map.Layer;
+import org.geotools.map.MapContent;
+import org.geotools.styling.SLD;
+import org.geotools.styling.Style;
+import org.geotools.swing.JMapFrame;
+import org.geotools.swing.data.JFileDataStoreChooser;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -30,6 +41,7 @@ public class GUI extends JFrame implements ActionListener{
     public String clickedButton = "";
     public Integer[] selectedFeatures;
     
+    public ArrayList<DrawnShape> shapeList;
     public ArrayList<DrawnShape> selectedList; //list which should save the selected features
     public ArrayList<DrawnShape> unselectedList;
         
@@ -321,7 +333,7 @@ public class GUI extends JFrame implements ActionListener{
 		
         slelectPointButton = new JButton(new ImageIcon(getClass().getResource("slecetpoints.png")));
 		slelectPointButton.setToolTipText("Select all Points");
-		slelectPointButton.setText("Selcet Points");
+		slelectPointButton.setText("Select Points");
 		slelectPointButton.setVerticalTextPosition(AbstractButton.CENTER);
 		slelectPointButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
 		slelectPointButton.addActionListener(this);
@@ -366,7 +378,6 @@ public class GUI extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				if(getExtendedState()!= JFrame.MAXIMIZED_BOTH){
 					setExtendedState(JFrame.MAXIMIZED_BOTH);
 					maximizeMenuItem.setEnabled(false);
@@ -380,7 +391,6 @@ public class GUI extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				if(getExtendedState()!= JFrame.NORMAL){
 					setExtendedState(JFrame.NORMAL);
 					minimizeMenuItem.setEnabled(false);
@@ -507,7 +517,66 @@ public class GUI extends JFrame implements ActionListener{
 			}
 		}
 		
+		// Save all shapes to csv
 		if(e.getSource() == saveMenuItem ) {
+			JFileChooser fc = new JFileChooser();
+			fc.setAcceptAllFileFilterUsed(false);
+			FileNameExtensionFilter extFilter = new FileNameExtensionFilter("CSV files", "csv");
+			fc.addChoosableFileFilter(extFilter);
+			int i = fc.showSaveDialog(this);
+			File f = fc.getSelectedFile();
+			System.out.println("Saving at " + f.getAbsolutePath());
+			ArrayList<String> csvLine = new ArrayList<String>();
+			for (DrawnShape shp : shapeList) {
+				csvLine.add(shp.geometry + ", '" + shp.type + "'");
+			}
+			CSVOperations.exportCSV(f, csvLine);
+		}
+		
+		// TODO Make it so that closing the window doesn't terminate the app.
+		if(e.getSource() == importShpMenuItem ) {
+			File file = JFileDataStoreChooser.showOpenFile("shp", null);
+			if (file == null) {
+			    return;
+			}
+					
+			FileDataStore store;
+			try {
+				store = FileDataStoreFinder.getDataStore(file);
+				SimpleFeatureSource featureSource = store.getFeatureSource();
+				
+				// Create a map content and add our shapefile to it
+				MapContent map = new MapContent();
+				map.setTitle("Quickstart");
+				
+				Style style = SLD.createSimpleStyle(featureSource.getSchema());
+				Layer layer = new FeatureLayer(featureSource, style);
+				map.addLayer(layer);
+	
+				// Now display the map
+				JMapFrame.showMap(map);
+			} catch (IOException e1) {
+	
+				e1.printStackTrace();
+			}
+
+		}
+		
+		// TODO Low priority: Check if items in db already exist.
+		if(e.getSource() == save2DbMenuItem ) {
+			if (selectedList.size() == 0) {
+				for (DrawnShape shp : shapeList) {
+					db.insertShapes(shp.geometry, "'" + shp.type + "'");
+				}
+			} else {
+				for (DrawnShape shp : selectedList) {
+					db.insertShapes(shp.geometry, "'" + shp.type + "'");
+				}
+			}
+		}
+		
+		// TODO Handle DB Logic from database. FileChooser not needed
+		if(e.getSource() == loadFromDbMenuItem ) {
 			JFileChooser fc = new JFileChooser();
 			fc.setAcceptAllFileFilterUsed(false);
 			FileNameExtensionFilter extFilter = new FileNameExtensionFilter("CSV files", "csv");
@@ -516,7 +585,48 @@ public class GUI extends JFrame implements ActionListener{
 			if (i == JFileChooser.APPROVE_OPTION) {
 				File f = fc.getSelectedFile();
 				System.out.println("Saving at " + f.getAbsolutePath());
-				CSVOperations.exportCSV(f, db.getAllFromDB());
+				//CSVOperations.exportCSV(f, db.getAllFromDB());
+			}
+		}
+		
+		// TODO Handle CSV Import Logic
+		if(e.getSource() == importCsvMenuItem ) {
+			/*
+			JFileChooser fc = new JFileChooser();
+			fc.setAcceptAllFileFilterUsed(false);
+			FileNameExtensionFilter extFilter = new FileNameExtensionFilter("CSV files", "csv");
+			fc.addChoosableFileFilter(extFilter);
+			int i = fc.showSaveDialog(this);
+			if (i == JFileChooser.APPROVE_OPTION) {
+				File f = fc.getSelectedFile();
+				System.out.println("Saving at " + f.getAbsolutePath());
+				*/
+				CSVOperations.importCSV();
+			//}
+		}
+		
+		// Save selection to CSV, otherwise save all shapes.
+		// TODO Logic works but closes window on click
+		if(e.getSource() == exportCsvMenuItem ) {
+			JFileChooser fc = new JFileChooser();
+			fc.setAcceptAllFileFilterUsed(false);
+			FileNameExtensionFilter extFilter = new FileNameExtensionFilter("CSV files", "csv");
+			fc.addChoosableFileFilter(extFilter);
+			int i = fc.showSaveDialog(this);
+			if (i == JFileChooser.APPROVE_OPTION) {
+				File f = fc.getSelectedFile();
+				System.out.println("Saving at " + f.getAbsolutePath());
+				ArrayList<String> csvLine = new ArrayList<String>();
+				if (selectedList.size() == 0) {
+					for (DrawnShape shp : shapeList) {
+						csvLine.add(shp.geometry + ", '" + shp.type + "'");
+					}
+				} else {
+					for (DrawnShape shp : selectedList) {
+						csvLine.add(shp.geometry + ", '" + shp.type + "'");
+					}
+				}
+				CSVOperations.exportCSV(f, csvLine);
 			}
 		}
 		
@@ -584,7 +694,6 @@ public class GUI extends JFrame implements ActionListener{
 	    private ArrayList<Dot> pointsList;
 	    private ArrayList<Line> lineList; //i want to make this for lines
 	    private ArrayList<Rect> rectList; //note there is an existing java calss Rectangle, but I'm making my own because of the parameters i want
-	    private ArrayList<DrawnShape> shapeList; //i'm thinking of making an additional super class
 	    private boolean drawing;
 	    
 	    //initializaing variables for use in drawing stuff
@@ -627,7 +736,7 @@ public class GUI extends JFrame implements ActionListener{
 	        		Dot d = new Dot(px, py);
 	        		pointsList.add(d);
 	        		shapeList.add(d);
-	        		db.insertShapes(d.geometry(), "'Point'");
+	        		// db.insertShapes(d.geometry(), "'Point'");
 	        		
 	        		
 	        	}
@@ -771,7 +880,7 @@ public class GUI extends JFrame implements ActionListener{
 	        		 lineList.add(lin); //append new lin to ArrayList "lineList"
 	        		 shapeList.add(lin);
 	        		 // Send new line to the Database
-	        		 db.insertShapes(lin.geometry(), "'Line'");
+	        		 // db.insertShapes(lin.geometry(), "'Line'");
 	        		 
 	        
 	        	}
@@ -786,7 +895,7 @@ public class GUI extends JFrame implements ActionListener{
 	        		g.setColor(Color.BLACK); //not sure if there was a purpose to this being here twice... this was not me
 //	        		g.drawRect(recX1, recY1, widthRec, heightRec);
 	        		// Send new rectangle to the Database
-	        		db.insertShapes(rec.geometry(), "'Rectangle'");
+	        		// db.insertShapes(rec.geometry(), "'Rectangle'");
 	        		
 	        		
 	        	}
@@ -850,7 +959,7 @@ public class GUI extends JFrame implements ActionListener{
 		        		if (shp.type == "Line") {
 		        			Line lin3 = (Line) shp; //loads next item from list into lin2 so that we can draw this out
 			       			
-		        			x1 = lin3.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+		        			x1 = lin3.x1(); //these just retrieve the x and y elements of the coordinates to use in drawLine below
 			       			x2 = lin3.x2();
 			       			y1 = lin3.y1();
 			       			y2 = lin3.y2();

@@ -8,6 +8,7 @@ public class Dot extends DrawnShape {
         this.py = py;
         
         super.type = "Point";
+        super.geometry = px + ", " + py;
 
     }	
 	public int px() {

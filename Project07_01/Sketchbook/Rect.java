@@ -11,6 +11,7 @@ public class Rect extends DrawnShape{
         this.recY2 = recY2;
         
         super.type = "Rectangle";
+        super.geometry = recX1 + ", " + recX2 + ", " + recY1 + ", " + recY2;
 
     }	
 	public int recX1() {
