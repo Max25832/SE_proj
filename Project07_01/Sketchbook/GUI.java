@@ -268,7 +268,7 @@ public class GUI extends JFrame implements ActionListener{
         rectangleButton.setContentAreaFilled(false);
 
 		selectButton = new JButton(new ImageIcon(getClass().getResource("selection.png")));
-		selectButton.setText("Select All");
+		selectButton.setText("Select");
 		selectButton.setToolTipText("Select Items");
 		selectButton.setVerticalTextPosition(AbstractButton.CENTER);
 		selectButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
@@ -454,14 +454,10 @@ public class GUI extends JFrame implements ActionListener{
 		add(toolbar, BorderLayout.NORTH);
 		//add(imageLabel, BorderLayout.CENTER);
 		add(ta, BorderLayout.SOUTH);
-		setSize(800, 1600);
+		setSize(1600, 900);
 		setVisible(true);
 	}
 
-	private void setBorder(Border createEmptyBorder) {
-		// TODO Auto-generated method stub
-		
-	}
 	/**
 	 * This actionPerformed governs mouseclicks for all menu items.
 	 * Many are as provided in the Swing UI example provided by Naznin Akter.
@@ -506,6 +502,7 @@ public class GUI extends JFrame implements ActionListener{
 						s2+= s1+"\n";
 					}
 					ta.setText(s2);
+					reader.close();
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -662,7 +659,11 @@ public class GUI extends JFrame implements ActionListener{
 		
 		// TODO add delete from database
 		if(e.getSource()==clearDbMenuItem){
-			db.deleteTable();
+			try {
+				db.deleteTable();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		}
 		if(e.getSource()==copyMenuItem){	
 			ta.copy();
