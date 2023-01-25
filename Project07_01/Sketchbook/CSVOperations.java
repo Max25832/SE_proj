@@ -65,7 +65,7 @@ public class CSVOperations {
 	 * 
 	 * INPUTS:
 	 * File f - The results of a Swing fileChooser operation.
-	 * Arraylist<String> data - an ArrayList containing strings.
+	 * Arraylist data - an ArrayList containing Strings.
 	 * 
 	 * OUTPUTS:
 	 * A file with user-specified name, location, and file extension.

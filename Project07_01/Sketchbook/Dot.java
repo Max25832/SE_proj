@@ -4,7 +4,7 @@ package Sketchbook;
  * This class defines a point (called Dot because Point is existing), extends DrawnShape
  * contains x and y coordinate
  * has methods to return required parameters for drawing
- * @authors Caden Wells, Felipe Vasquez
+ * @author Caden Wells, Felipe Vasquez
  */
 
 public class Dot extends DrawnShape {

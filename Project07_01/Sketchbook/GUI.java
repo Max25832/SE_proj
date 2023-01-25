@@ -47,7 +47,7 @@ public class GUI extends JFrame implements ActionListener{
     * shapeList - stores all objects
     * selectedList - keeps track of actively selected items
     * unselectedList - keeps track of unselected items when selected items exist
-    * @authors Ida Hausmann & Caden Wells
+    * @author Ida Hausmann, Caden Wells
     */
     public ArrayList<DrawnShape> shapeList;
     public ArrayList<DrawnShape> selectedList;
@@ -729,7 +729,7 @@ public class GUI extends JFrame implements ActionListener{
 	
 	/**
 	 * Drawing Panel for drawing shapes - contains everything pertaining to that
-	 * @authors Ida Hausmann & Caden Wells 
+	 * @author Ida Hausmann, Caden Wells 
 	 */
 	public class DrawingPanel extends JPanel implements MouseListener, MouseMotionListener {
 

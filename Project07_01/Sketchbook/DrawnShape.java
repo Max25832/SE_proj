@@ -5,7 +5,7 @@ package Sketchbook;
  * contains String "type" which will list shape type
  * contains String "geometry" which contains a its geometry information as text.
  * 
- * @authors Caden Wells, Felipe Vasquez
+ * @author Caden Wells, Felipe Vasquez
  */
 public class DrawnShape {
 	

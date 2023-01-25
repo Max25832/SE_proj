@@ -7,7 +7,7 @@ import java.awt.Graphics;
  * This class defines a Line, extends DrawnShape
  * contains x and y coordinates
  * has methods to return required parameters for drawing
- * @authors Caden Wells, Felipe Vasquez
+ * @author Caden Wells, Felipe Vasquez
  */
 
 public class Line extends DrawnShape {

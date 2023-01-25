@@ -3,8 +3,10 @@ package Sketchbook;
 import java.util.Locale;
 
 /**
+ * This is a working example of a GUI meant to illustrate CRUD capability
+ * and handling of geometric shapes.
  * 
- * @authors Ida Hausmann, Caden Wells, Max Kirsch, Felipe Vasquez
+ * @author Ida Hausmann, Caden Wells, Max Kirsch, Felipe Vasquez
  *
  */
 public class GUI_Main {
