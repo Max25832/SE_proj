@@ -139,27 +139,27 @@ public class GUI extends JFrame implements ActionListener{
 //Data menu items 
  
 		
-		importShpMenuItem = new JMenuItem("Import Shapefile", new ImageIcon(getClass().getResource("new.png")));
+		importShpMenuItem = new JMenuItem("Import Shapefile");
 		importShpMenuItem.setToolTipText("Import Data as Shapefile");
 		importShpMenuItem.addActionListener(this);
 
-		save2DbMenuItem = new JMenuItem("Save to Database", new ImageIcon(getClass().getResource("open.png")));
+		save2DbMenuItem = new JMenuItem("Save to Database");
 		save2DbMenuItem.setToolTipText("Save Selection to Database. If no Seletion, Saves all Data");
 		save2DbMenuItem.addActionListener(this);
 
-		loadFromDbMenuItem = new JMenuItem("Load from Database", new ImageIcon(getClass().getResource("save.png")));
+		loadFromDbMenuItem = new JMenuItem("Load from Database");
 		loadFromDbMenuItem.setToolTipText("Load from Database");
 		loadFromDbMenuItem.addActionListener(this);
 
-		importCsvMenuItem = new JMenuItem("Import CSV", new ImageIcon(getClass().getResource("exit.png")));
+		importCsvMenuItem = new JMenuItem("Import CSV");
 		importCsvMenuItem.setToolTipText("Import Data from CSV File");
 		importCsvMenuItem.addActionListener(this);
 
-		exportCsvMenuItem = new JMenuItem("Export CSV", new ImageIcon(getClass().getResource("exit.png")));
+		exportCsvMenuItem = new JMenuItem("Export CSV");
 		exportCsvMenuItem.setToolTipText("Export Selection as CSV. If no Seletion, Saves all Data");
 		exportCsvMenuItem.addActionListener(this);
 		
-		clearDbMenuItem = new JMenuItem("Clear Database", new ImageIcon(getClass().getResource("exit.png")));
+		clearDbMenuItem = new JMenuItem("Clear Database");
 		clearDbMenuItem.setToolTipText("Delete all data from the Database");
 		clearDbMenuItem.addActionListener(this);
 		
