@@ -7,7 +7,7 @@ import java.util.List;
 
 
 
-/*
+/**
  * Connects the Sketchbook to a local MySQL Database
  * Selects or loads the objects within.
  * 
@@ -15,30 +15,21 @@ import java.util.List;
  * 
  * @author Felipe Vasquez
  */
-
 public class Database {
-	/*
-	ArrayList<Point> points = new ArrayList<Point>();
-	ArrayList<Line> lines = new ArrayList<Line>();
-
-	ArrayList<Line> selectedLine = new ArrayList<Line>();
-
-	ArrayList<Line> triangles = new ArrayList<Line>();
-
-	ArrayList<Line> selectedTriangle = new ArrayList<Line>();
-
-	ArrayList<Integer> allIDs = new ArrayList<Integer>();
-	
-	ArrayList<Point[]> rects = new ArrayList<Point[]>();
-	*/
 
 	int lineId;
 	
 	public static Connection getConnection() throws Exception {
-		/* The Connection method attempts to connect to a SQL database
+		/**
+		 * The Connection method attempts to connect to a SQL database
 		 * Standard database parameters url, username and password are hardcoded
-		 *
-		 * Will attempt to create a database called "shapes_db" if it does not currently exist
+		 * Will attempt to create a database called "shapes_db" if it does not currently exist.
+		 * 
+		 * This uses the mysql jdbc driver for Java.
+		 * Using the DriverManager a connection using the url, username, and password are attempted.
+		 * A SQL query will attempt to create a database
+		 * Upon error will simply use the pre-existing database.
+		 * Upon a successful connection will print a success message.
 		 * 
 		 * INPUTS: None
 		 * 
@@ -83,7 +74,8 @@ public class Database {
 	}
 	
 	public static void createTable() {
-		/* The createTable method attempts to create a table in a SQL database
+		/**
+		 * The createTable method attempts to create a table in a SQL database
 		 * Standard table parameters geometry and type are hardcoded
 		 * 
 		 * Parameters:
@@ -111,7 +103,8 @@ public class Database {
 	}
 	
 	public static void deleteTable() throws Exception {
-		/* The deleteTable method attempts to delete a table in a SQL database
+		/**
+		 * The deleteTable method attempts to delete a table in a SQL database
 		 * Table name is hardcoded
 		 * 
 		 * Parameters:
@@ -139,7 +132,8 @@ public class Database {
 	}
 	
 	public void insertShapes(String geometry, String type) {
-		/* The insertShapes method (complex variant) inserts the values of selected shapes into 
+		/**
+		 * The insertShapes method (complex variant) inserts the values of selected shapes into 
 		 * the table "polygons"
 		 * 
 		 * INPUTS:
@@ -169,7 +163,8 @@ public class Database {
 	}
 	
 	public String[] getAllFromDB() {
-		/* The getAllLinesFromDB() method gets all data from the database
+		/**
+		 * The getAllLinesFromDB() method gets all data from the database
 		 * 
 		 * INPUTS: None
 		 * 
@@ -208,7 +203,8 @@ public class Database {
 	}
 	
 	public Integer[] selectFeatures(int inputX1, int inputY1, int inputX2, int inputY2) {
-		/* The selectFeatures() method returns the features of the database which are inside the Selection Rectangle
+		/**
+		 * The selectFeatures() method returns the features of the database which are inside the Selection Rectangle
 		 * 
 		 * INPUTS: the Coordinates of the Select-Rectangle
 		 * 
@@ -291,12 +287,6 @@ public class Database {
 		} finally {
 			System.out.println("selectFeatures() completed");
 		}
-		return idList.toArray(new Integer[0]);
-		
-		
-	}
-	
-	public void exportCSV() {
-		getAllFromDB();
+		return idList.toArray(new Integer[0]);	
 	}
 }

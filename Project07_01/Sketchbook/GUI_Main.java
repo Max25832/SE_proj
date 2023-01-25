@@ -2,6 +2,11 @@ package Sketchbook;
 
 import java.util.Locale;
 
+/**
+ * 
+ * @authors Ida Hausmann, Caden Wells, Max Kirsch, Felipe Vasquez
+ *
+ */
 public class GUI_Main {
 
 	public static void main(String[] args) {

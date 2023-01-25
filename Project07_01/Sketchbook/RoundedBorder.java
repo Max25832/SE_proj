@@ -9,7 +9,7 @@ import java.awt.RenderingHints;
 
 import javax.swing.border.LineBorder;
 
-/*
+/**
  * This class describes rounded edges of the buttons 
  * it extends the border type LineBorder
  * 

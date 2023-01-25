@@ -18,30 +18,6 @@ public class GraphicDrawing2 extends JPanel implements MouseListener, MouseMotio
 		addMouseListener(this);
 		addMouseMotionListener(this);
 	}
-	
-	/*
-
-	public static void main(String[] args) {
-		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					GraphicDrawing2 line= new GraphicDrawing2();
-					JFrame f= new JFrame();
-					f.setTitle("Geometry Drawing Panel");
-					f.setBounds(450, 190, 500, 500);
-					f.getContentPane().add(line);
-					f.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		// TODO Auto-generated method stub
-		
-	}
-	*/
-	
 
 	@Override
 	public void mousePressed(MouseEvent e) {

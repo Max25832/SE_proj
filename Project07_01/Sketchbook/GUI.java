@@ -31,7 +31,8 @@ public class GUI extends JFrame implements ActionListener{
 	JMenuItem newMenuItem, openMenuItem, textSubMenuItem, imageSubMenuItem, saveMenuItem, exitMenuItem, 
 	          cutMenuItem, copyMenuItem, pasteMenuItem, selectAllMenuItem, checkboxMenuItemShow, 
 	          checkboxMenuItemHide, radioButtonEngMenuItem, radioButtonDeMenuItem, colorChooserMenuItem, 
-	          gisToolMenuItem, userRegistrationMenuItem, userLoginMenuItem, importShpMenuItem, save2DbMenuItem, loadFromDbMenuItem, importCsvMenuItem, exportCsvMenuItem;
+	          gisToolMenuItem, userRegistrationMenuItem, userLoginMenuItem, importShpMenuItem, save2DbMenuItem, 
+	          loadFromDbMenuItem, importCsvMenuItem, exportCsvMenuItem, clearDbMenuItem;
 	JPopupMenu popupMenu;
 	JToolBar toolbar;
 	JButton pointButton, lineButton, rectangleButton, selectButton, moveButton, deleteButton, slelectRectButton, slelectPointButton, slelectLinesButton;
@@ -41,7 +42,7 @@ public class GUI extends JFrame implements ActionListener{
     public String clickedButton = "";
     public Integer[] selectedFeatures;
     
-   /* 
+   /** 
     * Declaring lists for saving drawn objects and differentiating selected items
     * shapeList - stores all objects
     * selectedList - keeps track of actively selected items
@@ -65,9 +66,9 @@ public class GUI extends JFrame implements ActionListener{
 		db.createTable();
 	    selectedList = new ArrayList<>(); //initialize selected list
     	    
-/*
- *defined colors that are going to be used  
- *@Author: Max Kirsch 
+/**
+ * defined colors that are going to be used  
+ * @author: Max Kirsch 
  */
 		Color toolbarColor = new Color(200,200,200);
 		Color menuColor = new Color(34, 87, 179);
@@ -82,11 +83,11 @@ public class GUI extends JFrame implements ActionListener{
 
 		
 
-/* 
+/** 
  * ***************File Menu*********************
  * creating menu dropwdown list
  * 
- * @Author: Max Kirsch 
+ * @author: Max Kirsch 
  */
 
 		fileMenu = new JMenu("File");
@@ -134,10 +135,11 @@ public class GUI extends JFrame implements ActionListener{
 		//End of File Menu
 
 		
-/* ********************Data Menu******************* 
+/** 
+ * ********************Data Menu******************* 
  * 
  * Dropdown Menu for importing, exporting and saving data
- * @Author: Max Kirsch  
+ * @author: Max Kirsch  
  */
 		dataMenu = new JMenu("Data");
 		dataMenu.setMnemonic(KeyEvent.VK_D);
@@ -184,9 +186,9 @@ public class GUI extends JFrame implements ActionListener{
 		
 		
 
-/*
+/**
  * **************Help Menu*******************
- * @Author: Max Kirsch 
+ * @author: Max Kirsch 
  */
 
 		helpMenu = new JMenu("Help");
@@ -226,16 +228,13 @@ public class GUI extends JFrame implements ActionListener{
 		toolbar.setFloatable(true);
 		toolbar.setBackground(toolbarColor);
 
-		
-		/* ***************** Buttons********************* */
-		
-        /*
+        /** *****************Buttons*********************
          * All Buttons are JButtons that have the following attributes:
          * an image and a text
          * ToolTip: shows a text, when hovering the curser over a button.
          * action listener -> action is implemented later in code 
          * 
-         * @Author: Max Kirsch 
+         * @author: Max Kirsch 
          */
 		
 		lineButton = new JButton(new ImageIcon(getClass().getResource("line_not.png")));
@@ -329,13 +328,13 @@ public class GUI extends JFrame implements ActionListener{
         slelectPointButton.setContentAreaFilled(false);
 		
 
-/* ******************Toolbar***************** */
-        /*
-         * for the Toolbar a gridlayout was created so that the buttons are evenly distributed
-         * each button was added to the toolbat and to seperate them rigit areas where created and put between the buttons
-         * 
-         * @Author: Max Kirsch 
-         */
+/** ******************Toolbar***************** 
+ *
+ * for the Toolbar a gridlayout was created so that the buttons are evenly distributed
+ * each button was added to the toolbat and to seperate them rigit areas where created and put between the buttons
+ * 
+ * @author: Max Kirsch 
+ */
         
       GridLayout gridLay = new GridLayout(1,13);
 		toolbar.setLayout(gridLay);
@@ -354,11 +353,11 @@ public class GUI extends JFrame implements ActionListener{
 
 		//End of Toolbar
 
-/* ***************Drawing Panel****************** 
+/** ***************Drawing Panel****************** 
  * 
  * changed color and put an outline around it 
  * 
- * @Author: Max Kirsch 
+ * @author: Max Kirsch 
  */
  		drawingPanel = new DrawingPanel();
 		drawingPanel.setBackground(drawingPanelColor);
@@ -463,7 +462,26 @@ public class GUI extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		
 	}
-
+	/**
+	 * This actionPerformed governs mouseclicks for all menu items.
+	 * Many are as provided in the Swing UI example provided by Naznin Akter.
+	 * Those with substantial changes are listed as follows:
+	 * 
+	 * saveMenuItem - saves all selected shapes using CSVOperations.exportCSV()
+	 * importShpMenuItem - Allows the user to select and visualize an Esri shapefile
+	 * 		(.shp) using the geotools java library.
+	 * save2DbMenuItem - Saves all selected shapes to an SQL database, 
+	 * 		if no selected shapes, will save all shapes.
+	 * loadFromDbMenuItem - Loads data as strings from an SQL database using Database.getAllFromDB1()
+	 * 		then creates a DrawnShape object based on its type parameter.
+	 * importCsvMenuItem - Loads data as strings from CSV using CSVOperations.importCSV()
+	 * 		then creates a DrawnShape object based on its type parameter.
+	 * exportCsvMenuItem - Saves all selected shapes to a CSV file, 
+	 * 		if no selected shapes, will save all shapes.
+	 * clearDbMenuItem - Deletes all data in the current SQL database.
+	 * 
+	 * @author Felipe Vasquez
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -642,8 +660,9 @@ public class GUI extends JFrame implements ActionListener{
 			}
 		}
 		
-		if(e.getSource()==cutMenuItem){
-			ta.cut();
+		// TODO add delete from database
+		if(e.getSource()==clearDbMenuItem){
+			db.deleteTable();
 		}
 		if(e.getSource()==copyMenuItem){	
 			ta.copy();
@@ -663,7 +682,7 @@ public class GUI extends JFrame implements ActionListener{
 			}	
 		}
 		
-		/*
+		/**
 		 * Check which button is clicked and set clickedButton variable accordingly
 		 * @author Ida Hausmann
 		 */
@@ -707,7 +726,7 @@ public class GUI extends JFrame implements ActionListener{
 	}
 	
 	
-	/*
+	/**
 	 * Drawing Panel for drawing shapes - contains everything pertaining to that
 	 * @authors Ida Hausmann & Caden Wells 
 	 */

@@ -1,10 +1,10 @@
 package Sketchbook;
 
-/*
+/**
  * This class defines a rectangle, extends DrawnShape
  * contains x and y coordinates, calculates length and width
  * has methods to return required parameters for drawing
- * @author Caden Wells, Felipe Vasquez
+ * @authors Caden Wells, Felipe Vasquez
  */
 
 //note there is an existing java class Rectangle, but I'm making my own because of the parameters i want

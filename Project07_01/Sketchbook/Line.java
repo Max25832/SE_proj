@@ -3,11 +3,11 @@ package Sketchbook;
 import java.awt.Graphics;
 
 
-/*
+/**
  * This class defines a Line, extends DrawnShape
  * contains x and y coordinates
  * has methods to return required parameters for drawing
- * @author Caden Wells
+ * @authors Caden Wells, Felipe Vasquez
  */
 
 public class Line extends DrawnShape {

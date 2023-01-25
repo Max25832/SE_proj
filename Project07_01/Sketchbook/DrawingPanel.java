@@ -30,13 +30,6 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
 			Point p = points.get(i);
 			g.fillOval(p.x, p.y, 5, 5);
 		}
-		 
-
-        // Draw the current line being drawn (if any)
-		/*
-		 * if (drawing && points.size() > 0) { Point p = points.get(points.size() - 1);
-		 * g.drawLine(p.x, p.y, p.x, p.y); }
-		 */
     }
 
     // MouseListener methods
