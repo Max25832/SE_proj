@@ -144,11 +144,11 @@ public class GUI extends JFrame implements ActionListener{
 
 		importCsvMenuItem = new JMenuItem("Import CSV", new ImageIcon(getClass().getResource("exit.png")));
 		importCsvMenuItem.setToolTipText("Import Data from CSV File");
-		importCsvMenuItem.addActionListener((event) -> System.exit(0));
+		importCsvMenuItem.addActionListener(this);
 
 		exportCsvMenuItem = new JMenuItem("Export CSV", new ImageIcon(getClass().getResource("exit.png")));
 		exportCsvMenuItem.setToolTipText("Export Selection as CSV. If no Seletion, Saves all Data");
-		exportCsvMenuItem.addActionListener((event) -> System.exit(0));
+		exportCsvMenuItem.addActionListener(this);
 
 		dataMenu.add(importShpMenuItem);
 		dataMenu.add(loadFromDbMenuItem);
@@ -528,26 +528,52 @@ public class GUI extends JFrame implements ActionListener{
 		
 		// TODO Handle DB Logic from database. FileChooser not needed
 		if(e.getSource() == loadFromDbMenuItem ) {
+			String[] fromDB = db.getAllFromDB();
+			for (String entry: fromDB) {
+				System.out.println(entry);
+				String[] split = entry.split(";");
+				String type = split[0];
+				String[] subString = split[1].split(", ");
+				if (type.equals("Point")) {
+					System.out.println("Printing Point");
+					shapeList.add(new Dot(subString[0], subString[1]));
+				} else if (type.equals("Line")) {
+					shapeList.add(new Line(subString[0], subString[1], subString[2], subString[3]));
+				} else if (type.equals("Rectangle")) {
+					shapeList.add(new Rect(subString[0], subString[1], subString[2], subString[3]));
+				}
+			}
+		}
+		
+		// Import all lines from a CSV
+		if(e.getSource() == importCsvMenuItem ) {
 			JFileChooser fc = new JFileChooser();
 			fc.setAcceptAllFileFilterUsed(false);
 			FileNameExtensionFilter extFilter = new FileNameExtensionFilter("CSV files", "csv");
 			fc.addChoosableFileFilter(extFilter);
-			int i = fc.showSaveDialog(this);
+			int i = fc.showOpenDialog(this);
 			if (i == JFileChooser.APPROVE_OPTION) {
 				File f = fc.getSelectedFile();
-				System.out.println("Saving at " + f.getAbsolutePath());
-				//CSVOperations.exportCSV(f, db.getAllFromDB());
+				System.out.println("Loading from " + f.getAbsolutePath());
+				String[] csvLines = CSVOperations.importCSV(f);
+				System.out.println(shapeList.size());
+				for (String string : csvLines) {
+					String[] subString = string.split(", ", 0);
+					String type = subString[subString.length - 1].replace("'", "");
+					if (type.equals("Point")) {
+						System.out.println("Printing Point");
+						shapeList.add(new Dot(subString[0], subString[1]));
+					} else if (type.equals("Line")) {
+						shapeList.add(new Line(subString[0], subString[1], subString[2], subString[3]));
+					} else if (type.equals("Rectangle")) {
+						shapeList.add(new Rect(subString[0], subString[1], subString[2], subString[3]));
+					}
+				}
+				System.out.println("Click on the drawing panel to load shapes");
 			}
 		}
 		
-		// TODO Handle CSV Import Logic
-		if(e.getSource() == importCsvMenuItem ) {
-		
-				CSVOperations.importCSV();
-		}
-		
 		// Save selection to CSV, otherwise save all shapes.
-		// TODO Logic works but closes window on click
 		if(e.getSource() == exportCsvMenuItem ) {
 			JFileChooser fc = new JFileChooser();
 			fc.setAcceptAllFileFilterUsed(false);

@@ -22,7 +22,17 @@ public class Line extends DrawnShape {
         this.y2 = y2;
         
         super.type = "Line";
-        super.geometry = x1 + ", " + x2 + ", " + y1 + ", " + y2;
+        super.geometry = x1 + ", " + y1 + ", " + x2 + ", " + y2;
+    }
+    
+    public Line(String x1, String y1, String x2, String y2) {
+        this.x1 = Integer.parseInt(x1);
+        this.y1 = Integer.parseInt(y1);
+        this.x2 = Integer.parseInt(x2);
+        this.y2 = Integer.parseInt(y2);
+        
+        super.type = "Line";
+        super.geometry = this.x1 + ", " + this.y1 + ", " + this.x2 + ", " + this.y2;
     }
     
 	//the following methods are used to return the required parameters for drawing
@@ -56,7 +66,7 @@ public class Line extends DrawnShape {
     }
     
     public String geometry() {
-    	String geometry = x1 + ", " + x2 + ", " + y1 + ", " + y2;
+    	String geometry = x1 + ", " + y1 + ", " + x2 + ", " + y2;
     	super.geometry = this.geometry;
     	return geometry;
     }
