@@ -17,8 +17,24 @@ import java.util.Scanner;
  * @author Felipe Vasquez
  */
 public class CSVOperations {
-	public static void importCSV() {
+	public static String[] importCSV(File file) {
+		List<String> list = new LinkedList<String>();
+		try {
+			Scanner Reader = new Scanner(file);
+			while (Reader.hasNextLine()) {
+				String data = Reader.nextLine();
+				//String[] subString = data.split(", ", 0);
+				//String type = subString[subString.length - 1];
+				list.add(data);
+				//System.out.println(data);
+			}
+			Reader.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("An error has occurred.");
+			e.printStackTrace();
+		}
 		System.out.println("importCSV() Successful");
+		return list.toArray(new String[0]);		
 	}
 	
 	public static void exportCSV(File f, ArrayList<String> data) {
