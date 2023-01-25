@@ -9,13 +9,20 @@ import java.awt.RenderingHints;
 
 import javax.swing.border.LineBorder;
 
+/*
+ * This class describes rounded edges of the buttons 
+ * it extends the border type LineBorder
+ * 
+ * @Author Max Kirsch
+ */
+
+
 class RoundedBorder extends LineBorder {
 
     RoundedBorder(int radius) {
         super(Color.BLACK, 2, true);
         this.radius = radius;
     }
-
     private int radius;
 
     @Override
