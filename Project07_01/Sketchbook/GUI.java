@@ -57,27 +57,34 @@ public class GUI extends JFrame implements ActionListener{
 	
 		db.createTable();
 	    selectedList = new ArrayList<>();
-
-		Color toolbarColor = new Color(34, 125, 179);
+    	    
+/*
+ *defined colors that are going to be used  
+ *@Author: Max Kirsch 
+ */
+		Color toolbarColor = new Color(200,200,200);
 		Color menuColor = new Color(34, 87, 179);
-        
+		Color drawingPanelColor= new Color(250,250,250);
+	        
 		setTitle("Sketchbook DEMO!");
 		menuBar = new JMenuBar();
 		menuBar.setBackground(menuColor);
 		
 		ta = new JTextArea();
 		ta.setBackground(menuColor);
-//
-//		imageLabel = new JLabel("");
-//		imageLabel.setBounds(10, 10, 300, 200);
-//		imageLabel.setBackground(getForeground().DARK_GRAY);
-//
-		//File Menu 
+
+		
+/* 
+ * ***************File Menu*********************
+ * creating menu dropwdown list
+ * 
+ * @Author: Max Kirsch 
+ */
 		fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		fileMenu.setForeground(Color.WHITE);
 
-
+//Items for the dropdown list 
 		newMenuItem = new JMenuItem("New", new ImageIcon(getClass().getResource("new.png")));
 		newMenuItem.setMnemonic(KeyEvent.VK_N);
 		newMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
@@ -108,6 +115,7 @@ public class GUI extends JFrame implements ActionListener{
 		importSubMenu.add(textSubMenuItem);
 		importSubMenu.add(imageSubMenuItem);
 
+		//adding the items to the dropdown list
 		fileMenu.add(newMenuItem);
 		fileMenu.add(openMenuItem);
 		fileMenu.add(importSubMenu);
@@ -117,14 +125,19 @@ public class GUI extends JFrame implements ActionListener{
 		//End of File Menu
 
 		
-		//Data Menu 
+/* ********************Data Menu******************* 
+ * 
+ * Dropdown Menu for importing, exporting and saving data
+ * @Author: Max Kirsch  
+ */
 		dataMenu = new JMenu("Data");
-		dataMenu.setMnemonic(KeyEvent.VK_F);
+		dataMenu.setMnemonic(KeyEvent.VK_D);
 		dataMenu.setForeground(Color.WHITE);
 
 
 		
-		
+//Data menu items 
+ 
 		
 		importShpMenuItem = new JMenuItem("Import Shapefile", new ImageIcon(getClass().getResource("new.png")));
 		importShpMenuItem.setToolTipText("Import Data as Shapefile");
@@ -140,61 +153,37 @@ public class GUI extends JFrame implements ActionListener{
 
 		importCsvMenuItem = new JMenuItem("Import CSV", new ImageIcon(getClass().getResource("exit.png")));
 		importCsvMenuItem.setToolTipText("Import Data from CSV File");
-		importCsvMenuItem.addActionListener((event) -> System.exit(0));
+		importCsvMenuItem.addActionListener(this);
 
 		exportCsvMenuItem = new JMenuItem("Export CSV", new ImageIcon(getClass().getResource("exit.png")));
 		exportCsvMenuItem.setToolTipText("Export Selection as CSV. If no Seletion, Saves all Data");
-		exportCsvMenuItem.addActionListener((event) -> System.exit(0));
+		exportCsvMenuItem.addActionListener(this);
+		
+		clearDbMenuItem = new JMenuItem("Clear Database", new ImageIcon(getClass().getResource("exit.png")));
+		clearDbMenuItem.setToolTipText("Delete all data from the Database");
+		clearDbMenuItem.addActionListener(this);
+		
 
+		//added the Data items to the Data dropdown
 		dataMenu.add(importShpMenuItem);
 		dataMenu.add(loadFromDbMenuItem);
 		dataMenu.add(save2DbMenuItem);
 		dataMenu.add(importCsvMenuItem);
 		dataMenu.add(exportCsvMenuItem);
+		dataMenu.add(clearDbMenuItem);
 		//End of Data Menu
 
 		
 		
-//		
-//		//Java Graphic
-//		graphicMenu = new JMenu("Graphic");
-//		graphicMenu.setMnemonic(KeyEvent.VK_G);
-//		//###add MenuListener
-//		graphicMenu.addMenuListener(new MenuListener() {
-//			@Override
-//			public void menuCanceled(MenuEvent arg0) {
-//			}
-//
-//			@Override
-//			public void menuDeselected(MenuEvent arg0) {
-//			}
-//
-//			@Override
-//			public void menuSelected(MenuEvent e) {
-//				if(e.getSource()==graphicMenu){
-//					EventQueue.invokeLater(new Runnable() {
-//						public void run() {
-//							try {
-//								GraphicDrawing2 line= new GraphicDrawing2();
-//								JFrame f= new JFrame();
-//								f.setTitle("Geometry Drawing Panel");
-//								f.setBounds(450, 190, 500, 500);
-//								f.getContentPane().add(line);
-//								f.setVisible(true);
-//							} catch (Exception e) {
-//								e.printStackTrace();
-//							}
-//						}
-//					});
-//				}
-//			}
-//		});
-	
+/*
+ * **************Help Menu*******************
+ * @Author: Max Kirsch 
+ */
 		helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
 		helpMenu.setForeground(Color.WHITE);
 
-		//###add MenuListener
+		//Help menu MenuListener --> print out a messagfe when pressed 
 		helpMenu.addMenuListener(new MenuListener() {
 			@Override
 			public void menuCanceled(MenuEvent arg0) {
@@ -207,18 +196,17 @@ public class GUI extends JFrame implements ActionListener{
 			@Override
 			public void menuSelected(MenuEvent arg0) {
 				JOptionPane.showMessageDialog(getContentPane(),
-						"This is a complete example of Java Swing Menu, MenuItem, \n"+
-				"Dialogs, Db Functionality, GeoTool Lib Use, Graphic");
+						"This application allwos to: draw, move, export, import and delete shapes." +"The sourcecode can be found at our GitHub Repository: https://github.com/Max25832/SE_proj");
 			}
 		});
 		
+		
+		//adding the Menus to the benu bar  
 		menuBar.add(fileMenu);
 		menuBar.add(dataMenu);
-//		menuBar.add(graphicMenu);
-		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(helpMenu);
-		
 		setJMenuBar(menuBar);
+		menuBar.add(Box.createHorizontalGlue());
 		
 		
 		//Toolbar
@@ -226,12 +214,22 @@ public class GUI extends JFrame implements ActionListener{
 		toolbar.setLocation(10, 5);
 		toolbar.setMargin(new Insets(3, 10, 5, 10));
 		toolbar.setFloatable(true);
-		
+		toolbar.setBackground(toolbarColor);
 
 
+
 		
 		
-		//#######################################################Unsure about this
+		/* ***************** Buttons********************* */
+		
+        /*
+         * All Buttons are JButtons that have the following attributes:
+         * an image and a text
+         * ToolTip: shows a text, when hovering the curser over a button.
+         * action listener -> action is implemented later in code 
+         * 
+         * @Author: Max Kirsch 
+         */
 
 		
 		lineButton = new JButton(new ImageIcon(getClass().getResource("line_not.png")));
@@ -243,12 +241,9 @@ public class GUI extends JFrame implements ActionListener{
 		lineButton.setBorder(new RoundedBorder(35));
         lineButton.setForeground(Color.BLACK);
         lineButton.setContentAreaFilled(false);
-		
-		
-		
+			
 		pointButton = new JButton(new ImageIcon(getClass().getResource("point.png")));
 		pointButton.setText("Point");
-		//pointButton.setFocusPainted(false);
 		pointButton.setToolTipText("Draw Points");
 		pointButton.setVerticalTextPosition(AbstractButton.CENTER);
 	    pointButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
@@ -256,15 +251,7 @@ public class GUI extends JFrame implements ActionListener{
 		pointButton.setBorder(new RoundedBorder(35));
         pointButton.setForeground(Color.BLACK);
         pointButton.setContentAreaFilled(false);
-	
-		
-//		lineButton = new JButton(new ImageIcon(getClass().getResource("line_not.png")));
-//		lineButton.setText("Line");
-//		lineButton.setToolTipText("Draw Pines");
-//		lineButton.setVerticalTextPosition(AbstractButton.CENTER);
-//		lineButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
-//		lineButton.addActionListener(this);
-		
+			
 		rectangleButton = new JButton(new ImageIcon(getClass().getResource("vector.png")));
 		rectangleButton.setText("Rectangle");
 		rectangleButton.setToolTipText("Draw Rectangles");
@@ -274,9 +261,7 @@ public class GUI extends JFrame implements ActionListener{
 		rectangleButton.setBorder(new RoundedBorder(35));
         rectangleButton.setForeground(Color.BLACK);
         rectangleButton.setContentAreaFilled(false);
-	
-		
-			
+						
 		selectButton = new JButton(new ImageIcon(getClass().getResource("selection.png")));
 		selectButton.setText("Select All");
 		selectButton.setToolTipText("Select Items");
@@ -287,7 +272,6 @@ public class GUI extends JFrame implements ActionListener{
         selectButton.setForeground(Color.BLACK);
         selectButton.setContentAreaFilled(false);
 	
-
 		moveButton = new JButton(new ImageIcon(getClass().getResource("move.png")));
 		moveButton.setText("Move");
 		moveButton.setToolTipText("Move Objects");
@@ -298,7 +282,6 @@ public class GUI extends JFrame implements ActionListener{
         moveButton.setForeground(Color.BLACK);
         moveButton.setContentAreaFilled(false);
 	
-
 		deleteButton = new JButton(new ImageIcon(getClass().getResource("delete.png")));
 		deleteButton.setToolTipText("Delete Objects");
 		deleteButton.setText("Delete");
@@ -308,8 +291,7 @@ public class GUI extends JFrame implements ActionListener{
 		deleteButton.setBorder(new RoundedBorder(35));
         deleteButton.setForeground(Color.BLACK);
         deleteButton.setContentAreaFilled(false);
-		
-		
+				
         slelectLinesButton = new JButton(new ImageIcon(getClass().getResource("selectline.png")));
         slelectLinesButton.setToolTipText("Select all Lines");
         slelectLinesButton.setText("Select Lines");
@@ -319,8 +301,7 @@ public class GUI extends JFrame implements ActionListener{
         slelectLinesButton.setBorder(new RoundedBorder(35));
         slelectLinesButton.setForeground(Color.BLACK);
         slelectLinesButton.setContentAreaFilled(false);
-		
-		
+			
         slelectRectButton = new JButton(new ImageIcon(getClass().getResource("selectrect.png")));
         slelectRectButton.setToolTipText("Select all Rectangles");
         slelectRectButton.setText("Select Rectangles");
@@ -342,40 +323,48 @@ public class GUI extends JFrame implements ActionListener{
         slelectPointButton.setContentAreaFilled(false);
 		
 
-		 
+/* ******************Toolbar***************** */
+        /*
+         * for the Toolbar a gridlayout was created so that the buttons are evenly distributed
+         * each button was added to the toolbat and to seperate them rigit areas where created and put between the buttons
+         * 
+         * @Author: Max Kirsch 
+         */
+        
       GridLayout gridLay = new GridLayout(1,13);
 		toolbar.setLayout(gridLay);
 		toolbar.add(pointButton);
 		toolbar.add(lineButton);
 		toolbar.add(rectangleButton);
-		toolbar.add(Box.createRigidArea(new Dimension(4, 0)));
+		toolbar.add(Box.createRigidArea(new Dimension(1, 0)));
 		toolbar.add(selectButton); 
 		toolbar.add(slelectPointButton); 
 		toolbar.add(slelectRectButton); 
 		toolbar.add(slelectLinesButton); 
-		toolbar.add(Box.createRigidArea(new Dimension(4, 0)));
-		toolbar.add(Box.createRigidArea(new Dimension(4, 0)));
+		toolbar.add(Box.createRigidArea(new Dimension(1, 0)));
+		toolbar.add(Box.createRigidArea(new Dimension(1, 0)));
 		toolbar.add(moveButton); 
 		toolbar.add(deleteButton); 
-		
 
 		//End of Toolbar
 
-		drawingPanel = new DrawingPanel();
-		drawingPanel.setBackground(new Color(250,250,250));
+/* ***************Drawing Panel****************** 
+ * 
+ * changed color and put an outline around it 
+ * 
+ * @Author: Max Kirsch 
+ */
+ 		drawingPanel = new DrawingPanel();
+		drawingPanel.setBackground(drawingPanelColor);
         drawingPanel.setBorder(new LineBorder(menuColor, 15, false));
 
 		
-        //drawingPanel.add(taL, BorderLayout.EAST);
-        //drawingPanel.add(taR, BorderLayout.WEST);
-		
-		//Popup Menu
+        //Popup Menu
 		popupMenu = new JPopupMenu();
 		
 		JMenuItem maximizeMenuItem = new JMenuItem("Maximize");
 		//addActionListener
 		maximizeMenuItem.addActionListener(new ActionListener(){
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if(getExtendedState()!= JFrame.MAXIMIZED_BOTH){
@@ -459,7 +448,7 @@ public class GUI extends JFrame implements ActionListener{
 		add(toolbar, BorderLayout.NORTH);
 		//add(imageLabel, BorderLayout.CENTER);
 		add(ta, BorderLayout.SOUTH);
-		setSize(600, 600);
+		setSize(800, 1600);
 		setVisible(true);
 	}
 
