@@ -41,8 +41,15 @@ public class GUI extends JFrame implements ActionListener{
     public String clickedButton = "";
     public Integer[] selectedFeatures;
     
+   /* 
+    * Declaring lists for saving drawn objects and differentiating selected items
+    * shapeList - stores all objects
+    * selectedList - keeps track of actively selected items
+    * unselectedList - keeps track of unselected items when selected items exist
+    * @authors Ida Hausmann & Caden Wells
+    */
     public ArrayList<DrawnShape> shapeList;
-    public ArrayList<DrawnShape> selectedList; //list which should save the selected features
+    public ArrayList<DrawnShape> selectedList;
     public ArrayList<DrawnShape> unselectedList;
         
     // Instantiate the database
@@ -56,7 +63,7 @@ public class GUI extends JFrame implements ActionListener{
 
 	
 		db.createTable();
-	    selectedList = new ArrayList<>();
+	    selectedList = new ArrayList<>(); //initialize selected list
 
 		Color toolbarColor = new Color(34, 125, 179);
 		Color menuColor = new Color(34, 87, 179);
@@ -67,11 +74,8 @@ public class GUI extends JFrame implements ActionListener{
 		
 		ta = new JTextArea();
 		ta.setBackground(menuColor);
-//
-//		imageLabel = new JLabel("");
-//		imageLabel.setBounds(10, 10, 300, 200);
-//		imageLabel.setBackground(getForeground().DARK_GRAY);
-//
+
+		
 		//File Menu 
 		fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
@@ -155,40 +159,6 @@ public class GUI extends JFrame implements ActionListener{
 
 		
 		
-//		
-//		//Java Graphic
-//		graphicMenu = new JMenu("Graphic");
-//		graphicMenu.setMnemonic(KeyEvent.VK_G);
-//		//###add MenuListener
-//		graphicMenu.addMenuListener(new MenuListener() {
-//			@Override
-//			public void menuCanceled(MenuEvent arg0) {
-//			}
-//
-//			@Override
-//			public void menuDeselected(MenuEvent arg0) {
-//			}
-//
-//			@Override
-//			public void menuSelected(MenuEvent e) {
-//				if(e.getSource()==graphicMenu){
-//					EventQueue.invokeLater(new Runnable() {
-//						public void run() {
-//							try {
-//								GraphicDrawing2 line= new GraphicDrawing2();
-//								JFrame f= new JFrame();
-//								f.setTitle("Geometry Drawing Panel");
-//								f.setBounds(450, 190, 500, 500);
-//								f.getContentPane().add(line);
-//								f.setVisible(true);
-//							} catch (Exception e) {
-//								e.printStackTrace();
-//							}
-//						}
-//					});
-//				}
-//			}
-//		});
 	
 		helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
@@ -227,12 +197,6 @@ public class GUI extends JFrame implements ActionListener{
 		toolbar.setMargin(new Insets(3, 10, 5, 10));
 		toolbar.setFloatable(true);
 		
-
-
-		
-		
-		//#######################################################Unsure about this
-
 		
 		lineButton = new JButton(new ImageIcon(getClass().getResource("line_not.png")));
 		lineButton.setText("Line");
@@ -258,13 +222,6 @@ public class GUI extends JFrame implements ActionListener{
         pointButton.setContentAreaFilled(false);
 	
 		
-//		lineButton = new JButton(new ImageIcon(getClass().getResource("line_not.png")));
-//		lineButton.setText("Line");
-//		lineButton.setToolTipText("Draw Pines");
-//		lineButton.setVerticalTextPosition(AbstractButton.CENTER);
-//		lineButton.setHorizontalTextPosition(AbstractButton.TRAILING); 
-//		lineButton.addActionListener(this);
-		
 		rectangleButton = new JButton(new ImageIcon(getClass().getResource("vector.png")));
 		rectangleButton.setText("Rectangle");
 		rectangleButton.setToolTipText("Draw Rectangles");
@@ -275,8 +232,6 @@ public class GUI extends JFrame implements ActionListener{
         rectangleButton.setForeground(Color.BLACK);
         rectangleButton.setContentAreaFilled(false);
 	
-		
-			
 		selectButton = new JButton(new ImageIcon(getClass().getResource("selection.png")));
 		selectButton.setText("Select All");
 		selectButton.setToolTipText("Select Items");
@@ -287,7 +242,6 @@ public class GUI extends JFrame implements ActionListener{
         selectButton.setForeground(Color.BLACK);
         selectButton.setContentAreaFilled(false);
 	
-
 		moveButton = new JButton(new ImageIcon(getClass().getResource("move.png")));
 		moveButton.setText("Move");
 		moveButton.setToolTipText("Move Objects");
@@ -298,7 +252,6 @@ public class GUI extends JFrame implements ActionListener{
         moveButton.setForeground(Color.BLACK);
         moveButton.setContentAreaFilled(false);
 	
-
 		deleteButton = new JButton(new ImageIcon(getClass().getResource("delete.png")));
 		deleteButton.setToolTipText("Delete Objects");
 		deleteButton.setText("Delete");
@@ -365,9 +318,7 @@ public class GUI extends JFrame implements ActionListener{
 		drawingPanel.setBackground(new Color(250,250,250));
         drawingPanel.setBorder(new LineBorder(menuColor, 15, false));
 
-		
-        //drawingPanel.add(taL, BorderLayout.EAST);
-        //drawingPanel.add(taR, BorderLayout.WEST);
+
 		
 		//Popup Menu
 		popupMenu = new JPopupMenu();
@@ -591,18 +542,8 @@ public class GUI extends JFrame implements ActionListener{
 		
 		// TODO Handle CSV Import Logic
 		if(e.getSource() == importCsvMenuItem ) {
-			/*
-			JFileChooser fc = new JFileChooser();
-			fc.setAcceptAllFileFilterUsed(false);
-			FileNameExtensionFilter extFilter = new FileNameExtensionFilter("CSV files", "csv");
-			fc.addChoosableFileFilter(extFilter);
-			int i = fc.showSaveDialog(this);
-			if (i == JFileChooser.APPROVE_OPTION) {
-				File f = fc.getSelectedFile();
-				System.out.println("Saving at " + f.getAbsolutePath());
-				*/
+		
 				CSVOperations.importCSV();
-			//}
 		}
 		
 		// Save selection to CSV, otherwise save all shapes.
@@ -651,6 +592,11 @@ public class GUI extends JFrame implements ActionListener{
 			}	
 		}
 		
+		/*
+		 * Check which button is clicked and set clickedButton variable accordingly
+		 * @author Ida Hausmann
+		 */
+		
 		if(e.getSource()==pointButton) {
 			clickedButton = "point";
 		}
@@ -671,7 +617,7 @@ public class GUI extends JFrame implements ActionListener{
 		
 		if(e.getSource()==deleteButton) {
 			clickedButton = "delete";
-			selectedList.clear();
+			selectedList.clear(); //delete all objects stored in selected list (when "delete" is clicked)
 		}
 		if(e.getSource()== slelectRectButton) {
 			clickedButton = "selectRect";
@@ -689,59 +635,66 @@ public class GUI extends JFrame implements ActionListener{
 		
 	}
 	
+	
+	/*
+	 * Drawing Panel for drawing shapes - contains everything pertaining to that
+	 * @authors Ida Hausmann & Caden Wells 
+	 */
 	public class DrawingPanel extends JPanel implements MouseListener, MouseMotionListener {
 
-	    private ArrayList<Dot> pointsList;
-	    private ArrayList<Line> lineList; //i want to make this for lines
-	    private ArrayList<Rect> rectList; //note there is an existing java calss Rectangle, but I'm making my own because of the parameters i want
 	    private boolean drawing;
 	    
-	    //initializaing variables for use in drawing stuff
+	    //initializing variables needed for selecting and moving objects
 	    int selectX1, selectX2, selectY1, selectY2, selectClickX, selectClickY, selectRelX, selectRelY;
 	    int moveX, moveY, moveDistX, moveDistY;
-	    //points stuff
+	    //for saving point coordinates
 	    int px, py;
 	    int xp, yp;
-	    //rectangles stuff
+	    //for saving rectangle parameters
 	    int recX1, recX2, recY1, recY2;
 	    int widthRec, heightRec;
 	    int rx1, ry1, rw, rh;
-	    //line stuff
+	    //for saving line coordinates
 	    int lineX1, lineX2, lineY1, lineY2;
 	    int x1, x2, y1, y2;
 	    double slope;
 	    
+	    //constructor method for DrawingPanel
+	    //creates needed lists and implements mouse listeners
 	    public DrawingPanel() {
-	        pointsList = new ArrayList<>();
-	        lineList = new ArrayList<>();
-	        rectList = new ArrayList<>();
+
 	        shapeList = new ArrayList<>();
 	        unselectedList = new ArrayList<>();
 	        addMouseListener(this);
 	        addMouseMotionListener(this);
 	    }
-
+	    
+	    //method for drawing in the drawing panel
 	    public void paintComponent(Graphics g) {
-	        super.paintComponent(g);
-
-//	        	// This for block draws the points every time they get changed
-//	        	for (int i = 0; i < pointsList.size(); i++) {
-//					//draw a point
-//					Point p = pointsList.get(i);
-//					g.fillOval(p.x, p.y, 5, 5);
-//					//System.out.println(p);
-//				}
+	        super.paintComponent(g); //inherit from super class (JPanel)
 	        	
+	        	//adding new point (d) to shapeList when "point" button is active
 	        	if(clickedButton.equals("point")) {
 	        		Dot d = new Dot(px, py);
-	        		pointsList.add(d);
-	        		shapeList.add(d);
-	        		// db.insertShapes(d.geometry(), "'Point'");
-	        		
+	        		shapeList.add(d);	        		
 	        		
 	        	}
 	        	
-	        	// TODO: Make it so that the rectangle is transparent no matter what direction it is drawn
+	        	//adding new line (lin) to shapeList when "line" button is active
+	        	if (clickedButton.equals("line")) {
+	        		 Line lin = new Line(lineX1, lineY1, lineX2, lineY2); //takes user input and adds it to "lin" of class Line
+	        		 shapeList.add(lin);
+	        	}
+            
+	        	//adding new rectangle (rec) to shapeList when "rectangle" button is active
+	        	if(clickedButton.equals("rectangle")) {
+	        		Rect rec = new Rect(recX1, recY1 , recX2, recY2); 
+	        		shapeList.add(rec);
+	        	}
+	        	
+	        	//when selectPoint button is active, select all points
+	        	//iterate through shape list, add all type points to selectedList, delete from shape list,
+	        	//add all other objects (lines and rectangles) to unselected list
 	        	if(clickedButton.equals("selectPoint")) {
 	        		Iterator<DrawnShape> itr = shapeList.iterator();
 	        		while(itr.hasNext()) {
@@ -755,6 +708,9 @@ public class GUI extends JFrame implements ActionListener{
 	        		}
 	        	}
 	        	
+	        	//when selectLine button is active, select all lines
+	        	//iterate through shape list, add all type lines to selectedList, delete from shape list,
+	        	//add all other objects (points and rectangles) to unselected list
 	        	if(clickedButton.equals("selectLine")) {
 	        		Iterator<DrawnShape> itr = shapeList.iterator();
 	        		while(itr.hasNext()) {
@@ -768,6 +724,9 @@ public class GUI extends JFrame implements ActionListener{
 	        		}
 	        	}
 	        	
+	        	//when selectRect button is active, select all rectangles
+	        	//iterate through shape list, add all type rectangle to selectedList, delete from shape list,
+	        	//add all other objects (lines and points) to unselected list
 	        	if(clickedButton.equals("selectRect")) {
 	        		Iterator<DrawnShape> itr = shapeList.iterator();
 	        		while(itr.hasNext()) {
@@ -781,7 +740,9 @@ public class GUI extends JFrame implements ActionListener{
 	        		}
 	        	}
 	        	
+	        	//when select button is active, select all items within bounds of defined rectangle 
 	        	if(clickedButton.equals("select")) {
+	        		//check the direction in which the user has drawn the rectangle
 	        		if(selectClickX < selectRelX) {
 	        			selectX1 = selectClickX;
 	        			selectX2 = selectRelX;
@@ -797,18 +758,22 @@ public class GUI extends JFrame implements ActionListener{
 	        			selectY1 = selectRelY;
 	        		}
 	        		
+	        		//calculating and defining the select area
 	        		int widthSelect = selectX2 - selectX1;
 	        		int heightSelect = selectY2 - selectY1;
+	        		//draw the select rectangle (in blue, with border)
 	        		g.setColor(new Color(77, 158, 220, 50));
 	        		g.fillRect(selectX1, selectY1, widthSelect, heightSelect);
 	        		g.setColor(new Color(77, 158, 220));
 	        		g.drawRect(selectX1, selectY1, widthSelect, heightSelect);
 	        		
-	        		//current issue: when deleting we have to delete the object also from shapeList --> all shapes are redrawn when we select something
-	        		
+	        		//Iterate through the shape list to select shapes within the rectangle
 	        		Iterator<DrawnShape> itr = shapeList.iterator();
 	        		while(itr.hasNext()) {
 	        			DrawnShape shape = itr.next();
+	        			
+	        			//if shape is of type point, select based on these parameters 
+	        			//add to selectedList accordingly, remove from shape list and add other points to unselectedList
 	        			if(shape.type == "Point") {
 	        				Dot dotSelect = (Dot) shape;
 	        				if(dotSelect.px <= selectX2 && dotSelect.px >= selectX1 && dotSelect.py <= selectY2 && dotSelect.py >= selectY1) {
@@ -817,6 +782,9 @@ public class GUI extends JFrame implements ActionListener{
 	            			} else {
 	            				unselectedList.add(shape);
 	            			}
+	        				
+	        			//if shape is of type line, select based on these parameters 
+		        		//add to selectedList accordingly, remove from shape list and add other points to unselectedList	
 	        			} else if (shape.type == "Line") {
 	        				Line lineSelect = (Line) shape;
 	        				if(lineSelect.x1 <= selectX2 && lineSelect.x1 >= selectX1 && lineSelect.x2 <= selectX2 && lineSelect.x2 >= selectX1 && lineSelect.y1 <= selectY2 && lineSelect.y1 >= selectY1 && lineSelect.y2 <= selectY2 && lineSelect.y2 >= selectY1) {
@@ -825,6 +793,9 @@ public class GUI extends JFrame implements ActionListener{
 	        				}else {
 	            				unselectedList.add(shape);
 	            			}
+	        				
+	        			//if shape is of type rectangle, select based on these parameters 
+		        		//add to selectedList accordingly, remove from shape list and add other points to unselectedList
 	        			} else if (shape.type == "Rectangle") {
 	        				Rect rectSelect = (Rect) shape;
 	        				if(rectSelect.recX1 <= selectX2 && rectSelect.recX1 >= selectX1 && rectSelect.recX2 <= selectX2 && rectSelect.recX2 >= selectX1 && rectSelect.recY1 <= selectY2 && rectSelect.recY1 >= selectY1 && rectSelect.recY2 <= selectY2 && rectSelect.recY2 >= selectY1) {
@@ -837,115 +808,23 @@ public class GUI extends JFrame implements ActionListener{
 	            			}
 	        			}
 	        		}
-	        	
-//	        		for(DrawnShape s : shapeList) {
-//	        			if(s.type == "Point") {
-//	        				Dot dotSelect = (Dot) s;
-//	        				if(dotSelect.px <= selectX2 && dotSelect.px >= selectX1 && dotSelect.py <= selectY2 && dotSelect.py >= selectY1) {
-//	        					selectedList.add(s);
-////	        					int index = shapeList.indexOf(s);
-//	        					//delete object from shapeList
-//	        					System.out.println(dotSelect);
-//	            			} else {
-//	            				unselectedList.add(s);
-//	            			}
-//	        			} else if(s.type == "Line") {
-//	        				Line lineSelect = (Line) s;
-//	        				if(lineSelect.x1 <= selectX2 && lineSelect.x1 >= selectX1 && lineSelect.x2 <= selectX2 && lineSelect.x2 >= selectX1 && lineSelect.y1 <= selectY2 && lineSelect.y1 >= selectY1 && lineSelect.y2 <= selectY2 && lineSelect.y2 >= selectY1) {
-//	        					selectedList.add(s);
-//	        					//shapeList.remove(s);
-//	        					System.out.println(lineSelect);
-//	        				}else {
-//	            				unselectedList.add(s);
-//	            			}
-//	        			} else if(s.type == "Rectangle") {
-//	        				Rect rectSelect = (Rect) s;
-//	        				if(rectSelect.recX1 <= selectX2 && rectSelect.recX1 >= selectX1 && rectSelect.recX2 <= selectX2 && rectSelect.recX2 >= selectX1 && rectSelect.recY1 <= selectY2 && rectSelect.recY1 >= selectY1 && rectSelect.recY2 <= selectY2 && rectSelect.recY2 >= selectY1) {
-//	        					selectedList.add(s);
-//	        					//shapeList.remove(s);
-//	        					System.out.println(rectSelect);
-//	        				}else {
-//	            				unselectedList.add(s);
-//	            			}
-//	        			}
-//	        		}
 	        	  		
 	        		
 	        	}
 
-	        	// Write all user drawn lines to an Array List to be drawn later in code
-	        	if (clickedButton.equals("line")) {
-//	        		 g.setColor(Color.BLACK);
-	        		 Line lin = new Line(lineX1, lineY1, lineX2, lineY2); //takes user input and adds it to "lin" of class Line
-	        		 lineList.add(lin); //append new lin to ArrayList "lineList"
-	        		 shapeList.add(lin);
-	        		 // Send new line to the Database
-	        		 // db.insertShapes(lin.geometry(), "'Line'");
-	        		 
-	        
-	        	}
-            
-	        	// Write all user drawn rectangles to an Array List to be drawn later in code
-	        	if(clickedButton.equals("rectangle")) {
-	        		g.setColor(Color.BLACK);
-	        		Rect rec = new Rect(recX1, recY1 , recX2, recY2); 
-	        		rectList.add(rec);//append new rec to list
-	        		shapeList.add(rec);
-
-	        		g.setColor(Color.BLACK); //not sure if there was a purpose to this being here twice... this was not me
-//	        		g.drawRect(recX1, recY1, widthRec, heightRec);
-	        		// Send new rectangle to the Database
-	        		// db.insertShapes(rec.geometry(), "'Rectangle'");
-	        		
-	        		
-	        	}
+	        	
 	    
-			
+	        	//setting the color to draw the objects 
 	        	g.setColor(Color.BLACK);
-	        	
-	        	//this implementation has been replaced by the DrawnShape version below - CAN BE DELETED NOW
-	        	//the following two for loops need to be outside of the clickedButton areas so that they remain drawn
-	        	//iterate through list of lines and draw all the user drawn lines
-//	        	for (int i=0; i < lineList.size(); i++){
-//	        		g.setColor(Color.black);
-//	       			 Line lin2 = lineList.get(i); //loads next item from list into lin2 so that we can draw this out
-//	       			 x1 = lin2.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
-//	       			 x2 = lin2.x2();
-//	       			 y1 = lin2.y1();
-//	       			 y2 = lin2.y2();
-//	       			 
-//	       			 g.drawLine(x1, x2, y1, y2); //draw the line
-//                }
-//	        	
-//	        	//iterate through list of rectanles and draw all the user drawn rectangles
-//	        	for (int i=0; i < rectList.size(); i++) {
-//        			 Rect rec2 = rectList.get(i); //loads next item from list into rec2 so that we can draw this out
-//        			 rx1 = rec2.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
-//        			 ry1 = rec2.recY1();
-//        			 rw = rec2.widthRec();
-//        			 rh = rec2.heightRec();
-//
-//        			 
-// 	        		 g.drawRect(rx1, ry1, rw, rh);
-//                }
-//	        	
-//	        	for (int i=0; i < pointsList.size(); i++) {
-//	        		Dot d2 = pointsList.get(i);
-//	        		xp = d2.px();
-//	        		yp = d2.py();
-//	        		
-//	        		g.fillOval(xp, yp, 5, 5);
-//	        		
-//	        	}
-	        	
-	        	//NEW DRAWING IMPLEMENTATION USING DrawnShape CLASS
 
 	        	
-	        	
+	        	//checking if items are selected
+	        	//if no elements are selected: draw the objects of the shapeList
+	        	//if elements are selected: draw the objects of the selected and the unselected List
 	        	if(selectedList.size() == 0) {
 	        		for (DrawnShape shp : shapeList) {
 		        		
-		        		//points
+		        		//if the type of the current object is point, draw an oval with the size of 5x5 and the coordinates as parameters
 		        		if (shp.type == "Point") {
 		        			Dot d3 = (Dot) shp;
 		        			
@@ -955,11 +834,11 @@ public class GUI extends JFrame implements ActionListener{
 			        		g.fillOval(xp, yp, 5, 5);
 		        		}
 		        		
-		        		//lines
+		        		//if the type of the current object is line, draw a line
 		        		if (shp.type == "Line") {
-		        			Line lin3 = (Line) shp; //loads next item from list into lin2 so that we can draw this out
+		        			Line lin3 = (Line) shp;
 			       			
-		        			x1 = lin3.x1(); //these just retrieve the x and y elements of the coordinates to use in drawLine below
+		        			x1 = lin3.x1();
 			       			x2 = lin3.x2();
 			       			y1 = lin3.y1();
 			       			y2 = lin3.y2();
@@ -967,11 +846,11 @@ public class GUI extends JFrame implements ActionListener{
 			       			g.drawLine(x1, y1, x2, y2); //draw the line
 		        		}
 		        		
-		        		//rectangles
+		        		//if the type of the current object is rectangle, draw a rectangle
 		        		if (shp.type == "Rectangle") {
-		        			Rect rec3 = (Rect) shp; //loads next item from list into rec2 so that we can draw this out
+		        			Rect rec3 = (Rect) shp;
 		        			
-		        			rx1 = rec3.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
+		        			rx1 = rec3.recX1();
 		        			ry1 = rec3.recY1();
 		        			rw = rec3.widthRec();
 		        			rh = rec3.heightRec();
@@ -980,9 +859,10 @@ public class GUI extends JFrame implements ActionListener{
 		        		}	
 		        	}	
 	        	} else {
+	        		//start drawing the unselected List the same way the shapeList is drawn 
 	        		for (DrawnShape shp : unselectedList) {
 		        		
-		        		//points
+	        			//if the type of the current object is point, draw an oval with the size of 5x5 and the coordinates as parameters
 		        		if (shp.type == "Point") {
 		        			Dot d3 = (Dot) shp;
 		        			
@@ -992,23 +872,23 @@ public class GUI extends JFrame implements ActionListener{
 			        		g.fillOval(xp, yp, 5, 5);
 		        		}
 		        		
-		        		//lines
+		        		//if the type of the current object is line, draw a line
 		        		if (shp.type == "Line") {
-		        			Line lin3 = (Line) shp; //loads next item from list into lin2 so that we can draw this out
+		        			Line lin3 = (Line) shp; 
 			       			
-		        			x1 = lin3.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+		        			x1 = lin3.x1(); 
 			       			x2 = lin3.x2();
 			       			y1 = lin3.y1();
 			       			y2 = lin3.y2();
 			       			 
-			       			g.drawLine(x1, y1, x2, y2); //draw the line
+			       			g.drawLine(x1, y1, x2, y2);
 		        		}
 		        		
-		        		//rectangles
+		        		//if the type of the current object is rectangle, draw a rectangle
 		        		if (shp.type == "Rectangle") {
-		        			Rect rec3 = (Rect) shp; //loads next item from list into rec2 so that we can draw this out
+		        			Rect rec3 = (Rect) shp;
 		        			
-		        			rx1 = rec3.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
+		        			rx1 = rec3.recX1(); 
 		        			ry1 = rec3.recY1();
 		        			rw = rec3.widthRec();
 		        			rh = rec3.heightRec();
@@ -1018,11 +898,11 @@ public class GUI extends JFrame implements ActionListener{
 		        		
 		        	}
 		        	
+	        		//changing the color to draw objects to blue
 		        	g.setColor(new Color(77, 158, 220));
-		        	//draw selectedList
+		        	//draw objects of the selectedList
 		        	for (DrawnShape shp : selectedList) {
-		        		
-		        		//points
+		        		//if the type of the current object is point, draw an oval with the size of 5x5 and the coordinates as parameters
 		        		if (shp.type == "Point") {
 		        			Dot d3 = (Dot) shp;
 		        			
@@ -1032,23 +912,23 @@ public class GUI extends JFrame implements ActionListener{
 			        		g.fillOval(xp, yp, 5, 5);
 		        		}
 		        		
-		        		//lines
+		        		//if the type of the current object is line, draw a line
 		        		if (shp.type == "Line") {
-		        			Line lin3 = (Line) shp; //loads next item from list into lin2 so that we can draw this out
+		        			Line lin3 = (Line) shp;
 			       			
-		        			x1 = lin3.x1(); //these just retrieve the x and y elements of the coordanites to use in drawLine below
+		        			x1 = lin3.x1();
 			       			x2 = lin3.x2();
 			       			y1 = lin3.y1();
 			       			y2 = lin3.y2();
 			       			 
-			       			g.drawLine(x1, y1, x2, y2); //draw the line
+			       			g.drawLine(x1, y1, x2, y2);
 		        		}
 		        		
-		        		//rectangles
+		        		//if the type of the current object is rectangle, draw a rectangle
 		        		if (shp.type == "Rectangle") {
-		        			Rect rec3 = (Rect) shp; //loads next item from list into rec2 so that we can draw this out
+		        			Rect rec3 = (Rect) shp;
 		        			
-		        			rx1 = rec3.recX1(); //brings in required drawing parameters from Rect methods for the loaded rectangle rec2
+		        			rx1 = rec3.recX1();
 		        			ry1 = rec3.recY1();
 		        			rw = rec3.widthRec();
 		        			rh = rec3.heightRec();
@@ -1064,89 +944,118 @@ public class GUI extends JFrame implements ActionListener{
 
 	    }
 
-	    // MouseListener methods
+	    // MouseListener methods, event when mouse is pressed
 	    public void mousePressed(MouseEvent e) {
 
-	    	
+	    	//function called when the point button is active
 	    	if(clickedButton.equals("point")) {
-	    		//add selectedList to shapeList
+	    		
+	    		//add all objects of the selectedList to the shapeList
 	    		for(DrawnShape s : selectedList) {
 	    			shapeList.add(s);
 	    		}
-	    		//empty selectedList
+	    		//delete all objects in the selectedList
 	    		selectedList.clear();
-//	    		points.add(e.getPoint());
-//	    		db.insertShapes(e.getPoint().toString(), "'Point'");
+	    		// set the drawing function true to allow to draw on the panel
 		        drawing = true;
 		        
+		        //measuring the coordinates where the mouse clicked and save them in variables
 		        px = e.getX();
 	    		py = e.getY();
 	    	}
-	    	if(clickedButton.equals("select")) {
-	    		//add selectedList to shapeList
-	    		for(DrawnShape s : selectedList) {
-	    			shapeList.add(s);
-	    		}
-	    		//empty selectedList
-	    		selectedList.clear();
-	    		selectClickX = e.getX();
-	    		selectClickY = e.getY();
-	    	}
+	    	
+	    	//function called when the rectangle button is active
 	    	if(clickedButton.equals("rectangle")) {
-	    		//add selectedList to shapeList
+	    		
+	    		//add all objects of the selectedList to the shapeList
 	    		for(DrawnShape s : selectedList) {
 	    			shapeList.add(s);
 	    		}
+	    		
 	    		//empty selectedList
 	    		selectedList.clear();
+	    		
+	    		//measuring the coordinates where the mouse clicked and save them in variables
 	    		recX1 = e.getX();
 	    		recY1 = e.getY();
 	    	}
 	        
+	    	//function called when the line button is active
 	    	if(clickedButton.equals("line")) {
-	    		//add selectedList to shapeList
+	    		
+	    		//add all objects of the selectedList to the shapeList
 	    		for(DrawnShape s : selectedList) {
 	    			shapeList.add(s);
 	    		}
+	    		
 	    		//empty selectedList
 	    		selectedList.clear();
+	    		
+	    		//measuring the coordinates where the mouse clicked and save them in variables
 	    		lineX1 = e.getX();
 	    		lineY1 = e.getY();
 	    	}
 	    	
+	    	//function called when the select button is active
+	    	if(clickedButton.equals("select")) {
+	    		
+	    		//add all objects of the selectedList to the shapeList
+	    		for(DrawnShape s : selectedList) {
+	    			shapeList.add(s);
+	    		}
+	    		
+	    		//empty selectedList
+	    		selectedList.clear();
+	    		
+	    		//measuring the coordinates where the mouse clicked and save them in variables
+	    		selectClickX = e.getX();
+	    		selectClickY = e.getY();
+	    	}
+	    	
+	    	//function called when the select button is active
 	    	if(clickedButton.equals("move")) {
+	    		//measuring the coordinates where the mouse clicked and save them in variables
 	    		moveX = e.getX();
 	    		moveY = e.getY();
 	    	}
 	        
 	    }
 
+	    // MouseListener methods, event when mouse is released
 	    public void mouseReleased(MouseEvent e) {
+	    	//function called when the select button is active
 	    	if(clickedButton.equals("select")) {
+	    		//measuring the coordinates where the mouse released and save them in variables
 	    		selectRelX = e.getX();
 	    		selectRelY = e.getY();
 	    	}
 	        drawing = false;
 	        repaint();
-
+	    	//function called when the rectangle button is active
 	    	if(clickedButton.equals("rectangle")) {
+	    		//measuring the coordinates where the mouse released and save them in variables
 	    		recX2 = e.getX();
 	    		recY2 = e.getY();
 	    	}
 	        drawing = false;
 	        repaint();
-
+	    	//function called when the line button is active
 	    	if(clickedButton.equals("line")) {
+	    		//measuring the coordinates where the mouse released and save them in variables
 	    		lineX2 = e.getX();
 	    		lineY2 = e.getY();
 	    	}
 	        drawing = false;
 	        repaint();
 	        
+	    	//function called when the move button is active
 	        if(clickedButton.equals("move")) {
+	    		//measuring the coordinates where the mouse released and calculate the distance between the start point and end point
+	        	//save this in variables
 	    		moveDistX = e.getX() - moveX;
 	    		moveDistY = e.getY() - moveY;
 	    		
+	    		//iterate through the selectedList and change the coordinates of the objects accordingly to the move distance
 	    		for(DrawnShape p : selectedList) {
 	    			if(p.type == "Point") {
 	    				Dot moveDot = (Dot) p;
@@ -1174,25 +1083,13 @@ public class GUI extends JFrame implements ActionListener{
 
 	    
 	    // Other MouseListener methods
-	    public void mouseClicked(MouseEvent e) {
-	        if (e.getClickCount() == 2) {
-	            drawing = false;
-	            repaint();
-	        }
-	    }
-	    
-	    
-	    // Other MouseListener methods
+	    public void mouseClicked(MouseEvent e) {}
+
 	    public void mouseEntered(MouseEvent e) {}
+	    
 	    public void mouseExited(MouseEvent e) {}
 
-	    // MouseMotionListener methods
-		
-	    public void mouseDragged(MouseEvent e) {
-	    	//points.add(e.getPoint());
-	    	//repaint();
-		}
-		 
+	    public void mouseDragged(MouseEvent e) {}
 
 	    public void mouseMoved(MouseEvent e) {}
 	}
